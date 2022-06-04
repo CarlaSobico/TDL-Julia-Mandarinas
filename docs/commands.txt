@@ -1,0 +1,65 @@
+Commands
+
+- cmd_init
+	Brief: 			Create BlockChain. Delete current BlockChain if created
+	Preconditions: 	-
+	Input: 
+		user
+		value
+		bits
+	Output: 
+		first block hash. FAIL otherwise
+
+- cmd_mine				
+	Brief: 			Create Block from the mempool and insert it to the BlockChain
+	Preconditions: 	-
+	Input: 
+		bits
+	Output: 		
+		Block hash if success. FAIL otherwise
+		
+- cmd_transfer			
+	Brief: 			Transfer amount of coins
+	Preconditions: 	Valid user. Enough Coins to transfer
+	Input: 
+		src user
+		dest1
+		value1
+		---
+		destN
+		valueN
+	Output: 
+		txn hash
+		
+- cmd_balance
+	Brief: 			Coins that the user has
+	Preconditions: 	Valid user
+	Input: 
+		user
+	Output: 
+		Coins that the user has
+		
+- cmd_save
+	Brief: 			Save current BlockChain
+	Preconditions: 	Exists
+	Input: 
+		filename
+	Output: 
+		OK if success. FAIL otherwise
+		
+- cmd_block
+	Brief: 			Block info
+	Preconditions: 	-
+	Input: 
+		blockId
+	Output: 
+		BlockInfo if success. FAIL otherwise
+		
+- cmd_txn 
+	Brief: 			Transaction info
+	Preconditions: 	-
+	Input: 
+		transactionId
+	Output: 
+		TransactionInfo if success. FAIL otherwise
+
