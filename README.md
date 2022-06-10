@@ -17,3 +17,4 @@ Una interfaz para que gente pueda realizar transacciones entre ellos, con estas 
 - Agregar transacciones a la blockchain
 
 Es un trabajo practico que teníamos hecho en c++, pero ahora podriamos usar las clases de Julia para reducir el código y optimizar.
+    
