@@ -1,0 +1,41 @@
+Blockchain
+{
+	Array/List of Block
+}
+
+Block
+{
+	// Insert Header and body ?
+	Hash prev_block
+	Hash txns_hash
+	int bits
+	int nonce
+
+	int txn_count
+	Array/List of tx
+}
+
+Tx
+{
+	int n_tx_in
+	Array/List of Input
+	
+	int n_tx_out
+	Array/List of Output
+}
+
+Input
+{
+	tx_id
+	idx
+	addr
+}
+
+Output
+{
+	value
+	addr
+}
+
+
+
