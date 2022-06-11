@@ -11,4 +11,12 @@ module Output
     end
     export Output
 
+    function compareAddr(output::Output, addr::String) 
+        cmp(output.addr, addr)
+    end
+
+    function toString(output::Output)
+        string(value, "\n", addr, "\n")
+    end
+
 end # module Output
