@@ -10,13 +10,12 @@ module Input
 	
         Input(tx_id = "", idx = 0, addr = "") = new(tx_id, idx, addr)
     end
-    export Input
 
-    function compareAddr(input::Input, addr::String) 
+    function CompareAddr(input::Input, addr::String) 
         cmp(input.addr, addr)
     end
 
-    function toString(input::Input) 
+    function ToString(input::Input) 
         idx_string = string(idx)
         string(tx_id, "\n", idx_string, "\n", addr, "\n")
     end
