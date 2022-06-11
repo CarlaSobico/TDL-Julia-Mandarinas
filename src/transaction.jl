@@ -61,9 +61,14 @@ module Transaction
     end
 
     # Look for output in the transaction by addr --------------------------------------------------
-    function HashTx(tx::Tx)
-        stringTx = string(tx.n_tx_in, join(tx.inputs_array), tx.n_tx_out, join(tx.outputs_array))
-        return bytes2hex(SHA.sha256(stringTx))
+    function ToString(tx::Tx)
+        return string( tx.n_tx_in
+                    , '\n'
+                    ,  join(tx.inputs_array)
+                    , '\n'
+                    , tx.n_tx_out
+                    , '\n'
+                    , join(tx.outputs_array))
     end
     
 end # module Transaction
