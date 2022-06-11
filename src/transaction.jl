@@ -1,8 +1,15 @@
 module Transaction
 
-    # Includes
+    # =============================================================================================
+    # Imports
+    # =============================================================================================
 
+    import(SHA)
+
+    # =============================================================================================
     # Structs
+    # =============================================================================================
+
     mutable struct Tx
         n_tx_in::Int64
         inputs_array::Array{Int64}      # TODO: Replace Int64 with Input
@@ -16,12 +23,47 @@ module Transaction
             , n_tx_out = 0
             , outputs_array = Array{Int64}[]) = new(n_tx_in, inputs_array, n_tx_out, outputs_array)
     end
-    export Tx
 
+    # =============================================================================================
     # Functions/Methods
-    function test()
-        println("hola")
-    end
-    export test
+    # =============================================================================================
 
+    # Append new input to transaction -------------------------------------------------------------
+    function AddInput(tx::Tx, input::Int64)
+        append!(tx.inputs_array, input)
+        tx.n_tx_in += 1
+    end
+
+    # Append new output to transaction ------------------------------------------------------------
+    function AddOutput(tx::Tx, output::Int64)
+        append!(tx.outputs_array, output)
+        tx.n_tx_out += 1
+    end
+
+    # Look for input in the transaction. True is was found, False if not --------------------------
+    function FindInput(tx::Tx, input::Int64)
+        return !isempty(findall(x -> x == input, tx.inputs_array))
+    end
+
+    # Look for input in the transaction by addr ---------------------------------------------------
+    function FindInput(tx::Tx, addr::String)
+        return # TODO
+    end
+
+    # Look for output in the transaction. True is was found, False if not -------------------------
+    function FindOutput(tx::Tx, output::Int64)
+        return !isempty(findall(x -> x == output, tx.outputs_array))
+    end
+
+    # Look for output in the transaction by addr --------------------------------------------------
+    function FindOutput(tx::Tx, addr::String)
+        return # TODO
+    end
+
+    # Look for output in the transaction by addr --------------------------------------------------
+    function HashTx(tx::Tx)
+        stringTx = string(tx.n_tx_in, join(tx.inputs_array), tx.n_tx_out, join(tx.outputs_array))
+        return bytes2hex(SHA.sha256(stringTx))
+    end
+    
 end # module Transaction
