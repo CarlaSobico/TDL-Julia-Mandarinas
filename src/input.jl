@@ -1,4 +1,4 @@
-module Input
+module InputModule
 
     # Includes
 
