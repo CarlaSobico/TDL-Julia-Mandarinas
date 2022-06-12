@@ -5,34 +5,41 @@ Blockchain
 
 Block
 {
-	// Insert Header and body ?
-	Hash prev_block
-	Hash txns_hash
+	String prev_block
+	String txns_hash
 	int bits
 	int nonce
 
 	int txn_count
 	Array/List of tx
+	
+	AddTx
+	ToString
+	ArrayTxToString
+	
+	// FindTx
+	FindInputsByAddr
+	FindOutputsByAddr
 }
 
 Tx
 {
+	Atributos:
 	int n_tx_in
 	Array/List of Input
 	
 	int n_tx_out
 	Array/List of Output
 	
+	Metodos/Funciones:
 	AddInput(tx::Tx, input::Int64)
 	AddOutput(tx::Tx, output::Int64)
 	
-	FindInput(tx::Tx, input::Int64)
-	FindInput(tx::Tx, addr::String)
+	FindInputsByAddr(tx::Tx, addr::String)
+	FindOutpointsByAddr(tx::Tx, output::String)
+	FindOutputsByAddr(tx::Tx, addr::String)
 	
-	FindOutput(tx::Tx, output::Int64)
-	FindOutput(tx::Tx, addr::String)
-	
-	HashTx(tx::Tx)
+	ToString(tx::Tx)
 }
 
 Input
