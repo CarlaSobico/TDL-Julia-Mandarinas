@@ -7,7 +7,7 @@ module OutputModule
         value::String  # La cantidad de Algocoins a transferir en este output
         addr::String; # La direccion de origen de los fondos (que debe coincidir con la direccion del output referenciado)
 
-        Output(value = "",addr = "") = new(value, addr)
+        Output(value = "default_value",addr = "default_addr") = new(value, addr)
     end
 
     function CompareAddr(output::Output, addr::String) 
@@ -15,7 +15,7 @@ module OutputModule
     end
 
     function ToString(output::Output)
-        string(value, "\n", addr, "\n")
+        string(output.value, " ", output.addr, "\n")
     end
 
 end # module Output
