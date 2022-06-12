@@ -56,14 +56,12 @@ function main()
     println("Print Transaction = \n", TransactionModule.ToString(tx_obj))
 
     # Look for outpoints
-    outpoints_array = TransactionModule.FindOutpointsByAddr(tx_obj, "4")
-    println("FindInput = ", outpoints_array[1][tx_id_str])
+    outpoints_array = TransactionModule.FindOutpointsByAddr(tx_obj, "Carla")
+    println("FindOutpoints = \n", outpoints_array[1][tx_id_str])
 
-    # println("FindOutput = ", TransactionModule.FindOutput(tx_obj, 5))
-    # println("FindOutput = ", TransactionModule.FindOutput(tx_obj, 30))
-    # println("FindOutput = ", TransactionModule.FindInput(tx_obj, 5))
+    # Look for outputs
 
-    # println("ToString = \n", TransactionModule.ToString(tx_obj))
+
 
     # End
     println("Fin")
