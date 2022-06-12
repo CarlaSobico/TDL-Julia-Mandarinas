@@ -57,12 +57,24 @@ function main()
 
     # Look for outpoints
     outpoints_array = TransactionModule.FindOutpointsByAddr(tx_obj, "Carla")
-    println("FindOutpoints = \n", outpoints_array[1][tx_id_str])
+    println("FindOutpointsByAddr = ")
+    for outpoint in outpoints_array
+        println(outpoint[tx_id_str], " ", outpoint[idx_str])
+    end
+
+    # Look for inputs
+    inputs_array = TransactionModule.FindInputsByAddr(tx_obj, "Fran")
+    println("FindInputsByAddr = ")
+    for input in inputs_array
+        println(input.tx_id, " ", input.idx, " ", input.addr)
+    end
 
     # Look for outputs
-
-
-
+    outputs_array = TransactionModule.FindOutputsByAddr(tx_obj, "Carla")
+    println("FindOutputsByAddr = ")
+    for output in outputs_array
+        println(output.value, " ", output.addr)
+    end
     # End
     println("Fin")
 end

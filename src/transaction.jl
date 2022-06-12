@@ -41,20 +41,21 @@ module TransactionModule
         tx.n_tx_out += 1
     end
 
-    # Buscar input en la transaccion --------------------------
-    function FindInput(tx::Tx, input::InputModule.Input)
-        # return !isempty(findall(x -> x == input, tx.inputs_array))
+    # Buscar inputs en la transaccion por addr. Devuelve un array de Inputs -----------------------
+    function FindInputsByAddr(tx::Tx, addr::String)
+        found_inputs_indexes = findall(x -> InputModule.CompareAddr(x, addr), tx.inputs_array)
+        return tx.inputs_array[found_inputs_indexes]   
     end
 
-    # Buscar input en la transaccion por addr. Devuelve un array de Outpoints(dictionaries) -------------
+    # Buscar outpoints en la transaccion por addr. Devuelve un array de Outpoints(dictionaries) ---
     function FindOutpointsByAddr(tx::Tx, addr::String)
 
         # Se obtienen los inputs asociados al usuario addr
-        found_inputs = findall(x -> InputModule.CompareAddr(x, addr), tx.inputs_array)
+        found_inputs_indexes = findall(x -> InputModule.CompareAddr(x, addr), tx.inputs_array)
         
         # Se crea un vector de outpoints de los inputs encontrados
         outpoints_array = Array{Dict{String, Any}}(undef, 0)
-        for i in found_inputs
+        for i in found_inputs_indexes
             outpoint = Dict{String, Any}(
                   tx_id_str => tx.inputs_array[i].tx_id
                 , idx_str => tx.inputs_array[i].idx
@@ -65,15 +66,10 @@ module TransactionModule
         return outpoints_array
     end
 
-    # Buscar output en la transaccion -------------------------------------------------------------
-    function FindOutput(tx::Tx, output::Int64)
-        # return !isempty(findall(x -> x == output, tx.outputs_array))
-    end
-
     # Buscar output en la transaccion por addr ----------------------------------------------------
-    function FindOutput(tx::Tx, addr::String)
-        return findall(x -> OutputModule.CompareAddr(x, addr), tx.inputs_array)
-
+    function FindOutputsByAddr(tx::Tx, addr::String)
+        found_outputs_indexes = findall(x -> OutputModule.CompareAddr(x, addr), tx.outputs_array)
+        return tx.outputs_array[found_outputs_indexes]
     end
 
     # Convertir transaccion a string en el formato correspondiente --------------------------------
