@@ -4,10 +4,10 @@ module OutputModule
 
     # Structs
     mutable struct Output
-        value::String  # La cantidad de Algocoins a transferir en este output
+        value::Int64  # La cantidad de Algocoins a transferir en este output
         addr::String; # La direccion de origen de los fondos (que debe coincidir con la direccion del output referenciado)
 
-        Output(value = "default_value",addr = "default_addr") = new(value, addr)
+        Output(value = 0,addr = "default_addr") = new(value, addr)
     end
 
     function CompareAddr(output::Output, addr::String) 
@@ -15,7 +15,8 @@ module OutputModule
     end
 
     function ToString(output::Output)
-        return string(output.value, " ", output.addr, "\n")
+        value_string = string(ouput.value)
+        return string(value_string, " ", output.addr, "\n")
     end
 
 end # module Output
