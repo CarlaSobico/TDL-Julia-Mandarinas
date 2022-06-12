@@ -22,6 +22,17 @@ Tx
 	
 	int n_tx_out
 	Array/List of Output
+	
+	AddInput(tx::Tx, input::Int64)
+	AddOutput(tx::Tx, output::Int64)
+	
+	FindInput(tx::Tx, input::Int64)
+	FindInput(tx::Tx, addr::String)
+	
+	FindOutput(tx::Tx, output::Int64)
+	FindOutput(tx::Tx, addr::String)
+	
+	HashTx(tx::Tx)
 }
 
 Input

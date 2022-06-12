@@ -20,4 +20,4 @@ module InputModule
         return string(input.tx_id, " ", idx_string, " ", input.addr, "\n")
     end
 
-end # module Input
+end # InputModule

@@ -15,7 +15,7 @@ module OutputModule
     end
 
     function ToString(output::Output)
-        value_string = string(ouput.value)
+        value_string = string(output.value)
         return string(value_string, " ", output.addr, "\n")
     end
 
