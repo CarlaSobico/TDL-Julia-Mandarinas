@@ -6,40 +6,64 @@
           Sobico Carla
 """
 
-# Includes
 include("transaction.jl")
+include("util.jl")
 
 # Using
-import .Transaction
+import .TransactionModule
 
 # Functions
 function main()
 
     println("Inicio")
 
-    # Create Object
-    tx_obj = Transaction.Tx()
+    # Create Transaction
+    tx_obj = TransactionModule.Tx()
 
-    # Initialize Inputs
-    for i in 1:10
-        Transaction.AddInput(tx_obj, i)
+    # Initialize some Inputs
+    input_obj = TransactionModule.InputModule.Input("tx_id_1", 2, "Carla")
+    TransactionModule.AddInput(tx_obj, input_obj)
+
+    input_obj = TransactionModule.InputModule.Input("tx_id_2", 1, "Carla")
+    TransactionModule.AddInput(tx_obj, input_obj)
+
+    input_obj = TransactionModule.InputModule.Input("tx_id_3", 5, "Fran")
+    TransactionModule.AddInput(tx_obj, input_obj)
+
+    input_obj = TransactionModule.InputModule.Input("tx_id_4", 1, "Carla")
+    TransactionModule.AddInput(tx_obj, input_obj)
+
+    # Some Default Inputs
+    for i in 1:5
+        input_obj = TransactionModule.InputModule.Input()
+        TransactionModule.AddInput(tx_obj, input_obj)
     end
 
-    # Initialize Outputs
-    for i in 5:15
-        Transaction.AddOutput(tx_obj, i)
+    # Initialize Some Outputs
+    output_obj = TransactionModule.OutputModule.Output(100, "Carla")
+    TransactionModule.AddOutput(tx_obj, output_obj)
+
+    output_obj = TransactionModule.OutputModule.Output(1500, "4")
+    TransactionModule.AddOutput(tx_obj, output_obj)
+
+    # Some Default Outputs
+    for i in 1:3
+        output_obj = TransactionModule.OutputModule.Output()
+        TransactionModule.AddOutput(tx_obj, output_obj)
     end
 
-    println("Inputs Array = ", tx_obj.inputs_array)
-    println("Outputs Array = ", tx_obj.outputs_array)
+    # Print Transaccion
+    println("Print Transaction = \n", TransactionModule.ToString(tx_obj))
 
-    # look for inputs-outputs
-    println("FindOutput = ", Transaction.FindOutput(tx_obj, 5))
-    println("FindOutput = ", Transaction.FindOutput(tx_obj, 30))
-    println("FindOutput = ", Transaction.FindInput(tx_obj, 5))
+    # Look for outpoints
+    outpoints_array = TransactionModule.FindOutpointsByAddr(tx_obj, "4")
+    println("FindInput = ", outpoints_array[1][tx_id_str])
 
-    # Print HashTx
-    println("ToString = \n", Transaction.ToString(tx_obj))
+    # println("FindOutput = ", TransactionModule.FindOutput(tx_obj, 5))
+    # println("FindOutput = ", TransactionModule.FindOutput(tx_obj, 30))
+    # println("FindOutput = ", TransactionModule.FindInput(tx_obj, 5))
+
+    # println("ToString = \n", TransactionModule.ToString(tx_obj))
 
     # End
     println("Fin")
