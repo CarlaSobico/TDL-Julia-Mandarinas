@@ -11,11 +11,11 @@ module OutputModule
     end
 
     function CompareAddr(output::Output, addr::String) 
-        cmp(output.addr, addr)
+        return cmp(output.addr, addr) == 0
     end
 
     function ToString(output::Output)
-        string(output.value, " ", output.addr, "\n")
+        return string(output.value, " ", output.addr, "\n")
     end
 
 end # module Output
