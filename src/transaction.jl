@@ -13,10 +13,10 @@ module TransactionModule
     # Structs
 
     mutable struct Tx
-        n_tx_in::Int64
+        n_tx_in::Int
         inputs_array::Array{InputModule.Input}
 
-        n_tx_out::Int64
+        n_tx_out::Int
         outputs_array::Array{OutputModule.Output}
 
         # Default Constructor
@@ -33,12 +33,14 @@ module TransactionModule
     function AddInput(tx::Tx, input::InputModule.Input)
         push!(tx.inputs_array, input)
         tx.n_tx_in += 1
+        return nothing
     end
 
     # Agregar nuevo output a la transaccion -------------------------------------------------------
     function AddOutput(tx::Tx, output::OutputModule.Output)
         push!(tx.outputs_array, output)
         tx.n_tx_out += 1
+        return nothing
     end
 
     # Buscar inputs en la transaccion por addr. Devuelve un array de Inputs -----------------------
