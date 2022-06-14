@@ -12,4 +12,3 @@ const value_str = "value"
 function HashString(str::String)
     return bytes2hex(SHA.sha256(str))
 end
-export

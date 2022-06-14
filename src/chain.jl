@@ -1,7 +1,9 @@
 module ChainModule
 
     # Includes    
+    
     include("block.jl")
+    include("util.jl")
 
     # Imports
     
@@ -11,8 +13,10 @@ module ChainModule
 
     mutable struct Chain
         blocks_array::Array{BlockModule.Block}
+        mempool::BlockModule.Block
 
-        Chain(blocks_array = Array{BlockModule.Block}[]) = new(blocks_array)
+        Chain(   blocks_array = Array{BlockModule.Block}[]
+               , mempool = BlockModule.Block()) = new(blocks_array, mempool)
     end
 
     # Functions/Methods
@@ -20,46 +24,59 @@ module ChainModule
     # Iniciar BlockChain. Agregaga bloque genesis
     function Init(chain::Chain, user::String, value::Int, bits::Int)
         
+        # Se borra la actual Blockchain y la mempool
         empty!(chain.blocks_array)
-        
-        genesis_block = BlockModule.Block() # TODO: Obtener Genesis Block
+        chain.mempool = BlockModule.Block()
+
+        # TODO: Obtener Genesis Block
+        genesis_block = BlockModule.Block()
         AddBlock(chain, genesis_block)
     end
 
     # Transfiere coins del usuario source a los destinatarios (si es posible)
-    function Transfer(chain::Chain, user_source::String, destinations::Array{Dict{String, Int}})
+    function Transfer(chain::Chain, user_source::String, destinations::Array{Dict{String, Any}})
         
         # Se calcula la cantidad de coins a transferir entre todos los destinatarios
+        sum_coins::Float64 = 0.0
         for destinations_iter in destinations 
             sum_coins += get(destinations_iter, value_str, 0)
         end
 
         # Se chequea que el user cuente con coins suficientes
-        [balance, outputs_info] = Balance(chain, user_source)
+        balance, outputs_info = GetBalance(chain, user_source)
 
         if sum_coins > balance
             return false
         else
-            # TODO Crear transaccion a partir de outputs_info
+            # TODO Crear transaccion a partir de outputs_info y agregarla a la mempool
+            return true
         end
     end
 
     # Agrega lo guardado en la mempool hasta el momento en la Blockchain minando el bloque con bits de dificultad
-    function Mine(chain::Chain, mempool::BlockModule.Block, bits::Int)
+    function MineAndAddMempool(chain::Chain, bits::Int)
 
-        # TODO: Minar bloque y dejarlo listo para agregar a la Blockchain
-        AddBlock(chain, mempool)
+        # Solo se agrega si la mempool tiene alguna transaccion
+        if chain.mempool.txn_count > 0
+
+            # TODO: Lamar a Mine function de BlockModule para que mine la mepool
+            #BlockModule.Mine(chain.mempool, bits)
+            AddBlock(chain, chain.mempool)
+
+            # Se reinicia la mepool
+            chain.mempool = BlockModule.Block()
+        end
     end
 
-    # Devuelve la cantidad de coins del usuario. FAIL si no encuentra al usuario y la info de los outputs de donde extraerlos
-    function Balance(chain::Chain, user_source::String)
+    # Devuelve la cantidad de coins del usuario. false si no encuentra al usuario y la info de los outputs de donde extraerlos
+    function GetBalance(chain::Chain, user_source::String)
+        return 0, 1
     end
 
     # Busca el correspondiente bloque e imprime su informacion. FAIl si no lo encuentra
     function FindBlock(chain::Chain, block_id::String)
 
         for block_iter in chain.blocks_array
-
             block_str = BlockModule.ToString(block_iter)
             if cmp(HashString(block_str), block_id) == 0
                 return block_str
@@ -74,8 +91,8 @@ module ChainModule
     function FindTx(chain::Chain, tx_id::String)
 
         for block_iter in chain.blocks_array
-
-            result = BlockModule.FindTx(block_iter, tx_id)
+            # TODO descomentar cuando FindTx este definida en BlockModule
+            # result = BlockModule.FindTx(block_iter, tx_id)
             if result != false
                 return result
             end
