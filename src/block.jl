@@ -5,8 +5,6 @@ include("transaction.jl")
 include("util.jl")
 
 # Imports
-
-import SHA
 import .TransactionModule
 
 # Structs
@@ -35,17 +33,15 @@ function ToString(block::Block)
     nonce_string = string(block.nonce)
     txn_count_string = string(block.txn_count)
     txns_string = ArrayTxToString(block.txns)
-
     return string(block.prev_block, "\n", block.txns_hash, "\n", bits_string, "\n", nonce_string, "\n", txn_count_string, "\n", txns_string, "\n")
-
 end
 
 function ArrayTxToString(txns::Array{TransactionModule.Tx})
     txns_string::String = ""
-
     for tx_iter in txns
         txns_string = txns_string * TransactionModule.ToString(tx_iter)
     end
+    return txns_string
 end
 
 function FindInputsByAddr(block::Block, addr::String)
@@ -67,11 +63,11 @@ end
 function FindTx(block::Block, addr::String)
     for tx_iter in Block.txns
         tx_string = TransactionModule.ToString(tx_iter)
-        hash = HashString(tx_string)
-        if cmp(hash, add) == 0
+        hash = Util.HashString(tx_string)
+        if cmp(hash, addr) == 0
             return tx_string
         end
     end
     return false
 end
-end # module Input
+end # module Block
