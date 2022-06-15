@@ -10,14 +10,12 @@ import SHA
 import .OutputModule
 import .InputModule
 
-# Structs
+    mutable struct Tx
+        n_tx_in::Int
+        inputs_array::Array{InputModule.Input}
 
-mutable struct Tx
-    n_tx_in::Int64
-    inputs_array::Array{InputModule.Input}
-
-    n_tx_out::Int64
-    outputs_array::Array{OutputModule.Output}
+        n_tx_out::Int
+        outputs_array::Array{OutputModule.Output}
 
     # Default Constructor
     Tx(n_tx_in=0, inputs_array=Array{InputModule.Input}[], n_tx_out=0, outputs_array=Array{OutputModule.Output}[]
