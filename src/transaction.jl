@@ -17,9 +17,6 @@ import .InputModule
         n_tx_out::Int
         outputs_array::Array{OutputModule.Output}
 
-    n_tx_out::Int64
-    outputs_array::Array{OutputModule.Output}
-
     # Default Constructor
     Tx(n_tx_in=0, inputs_array=Array{InputModule.Input}[], n_tx_out=0, outputs_array=Array{OutputModule.Output}[]
     ) = new(n_tx_in, inputs_array, n_tx_out, outputs_array)
