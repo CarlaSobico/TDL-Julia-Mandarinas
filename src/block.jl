@@ -62,7 +62,6 @@ end
 
 function FindOutputsInfoByAddr(block::Block, addr::String)
     outputs_info = Array{Dict{String, Any}}(undef, 0)
-
     for tx_iter in block.txns
         append!(outputs_info, TransactionModule.FindOutputsInfoByAddr(tx_iter, addr))
     end

@@ -34,20 +34,20 @@ module ChainModule
     end
 
     # Transfiere coins del usuario source a los destinatarios (si es posible)
-    function Transfer(chain::Chain, user_source::String, destinations::Array{Dict{String, Any}})
+    function Transfer(chain::Chain, user_source::String, destinations_array::Array{Dict{String, Any}})
         
         # Se calcula la cantidad de coins a transferir entre todos los destinatarios
-        sum_coins::Float64 = 0.0
-        for destinations_iter in destinations 
-            sum_coins += get(destinations_iter, value_str, 0)
+        needed_coins::Float64 = 0.0
+        for destinations_iter in destinations_array 
+            needed_coins += destinations_iter[value_str]
         end
 
-        balance, user_available_outputs = GetBalance(chain, user_source)
+        user_balance, user_available_outputs = GetBalance(chain, user_source)
 
-        if sum_coins > balance
+        if needed_coins > user_balance
             return false
         else
-            # TODO Crear transaccion a partir de outputs_info y agregarla a la mempool
+            # TODO Crear transaccion a partir de user_available_outputs y agregarla a la mempool
             return true
         end
     end
@@ -76,10 +76,12 @@ module ChainModule
         # Se obtienen los outputs del user_source
         user_outputs_info_array = FindOutputsInfoByAddr(chain, user_source)
 
+        # TODO: si ambos array estan vacios, el usuario no existe
+
         # Se eliminan los outputs que ya fueron referenciados a un input
-        for input in user_inputs_array
+        for input_iter in user_inputs_array
             indexes_to_delete = findall(
-                    output_info_elem -> (output_info_elem[tx_id_str] == input.tx_id  && output_info_elem[idx_str] == input.idx)
+                      output_info_elem -> (output_info_elem[tx_id_str] == input_iter.tx_id  && output_info_elem[idx_str] == input_iter.idx)
                     , user_outputs_info_array)
 
             deleteat!(user_outputs_info_array, indexes_to_delete)
@@ -87,7 +89,7 @@ module ChainModule
 
         # Se calcula el balance a partir del array de outputs no referenciados en ningun outpoint
         user_balance = 0.0
-        foreach(output_info_elem -> sum+=output_info_elem[output_str].value , user_outputs_info_array)
+        foreach(output_info_elem -> sum += output_info_elem[output_str].value, user_outputs_info_array)
         
         return user_balance, user_outputs_info_array
     end
@@ -128,6 +130,7 @@ module ChainModule
 
     # Busca todos los inputs asociados al usuario en la blockchain y en la mempool
     function FindInputsByAddr(chain::Chain, addr::String)
+
         found_inputs = Array{BlockModule.TransactionModule.InputModule.Input}(undef, 0)
 
         # Se busca primero en la blockchain
@@ -136,7 +139,7 @@ module ChainModule
         end
 
         # Se completa la busqueda buscando en la mempool
-        vcat(found_inputs, BlockModule.FindInputsByAddr(chain.mempool, addr))
+        append!(found_inputs, BlockModule.FindInputsByAddr(chain.mempool, addr))
 
         return found_inputs
     end
