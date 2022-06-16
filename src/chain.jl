@@ -42,8 +42,7 @@ module ChainModule
             sum_coins += get(destinations_iter, value_str, 0)
         end
 
-        # Se chequea que el user cuente con coins suficientes
-        balance, outputs_info = GetBalance(chain, user_source)
+        balance, user_available_outputs = GetBalance(chain, user_source)
 
         if sum_coins > balance
             return false
@@ -70,7 +69,27 @@ module ChainModule
 
     # Devuelve la cantidad de coins del usuario. false si no encuentra al usuario y la info de los outputs de donde extraerlos
     function GetBalance(chain::Chain, user_source::String)
-        return 0, 1
+
+        # Se obtienen los inputs del usuario
+        user_inputs_array = FindInputsByAddr(chain, user_source)
+
+        # Se obtienen los outputs del user_source
+        user_outputs_info_array = FindOutputsInfoByAddr(chain, user_source)
+
+        # Se eliminan los outputs que ya fueron referenciados a un input
+        for input in user_inputs_array
+            indexes_to_delete = findall(
+                    output_info_elem -> (output_info_elem[tx_id_str] == input.tx_id  && output_info_elem[idx_str] == input.idx)
+                    , user_outputs_info_array)
+
+            deleteat!(user_outputs_info_array, indexes_to_delete)
+        end
+
+        # Se calcula el balance a partir del array de outputs no referenciados en ningun outpoint
+        user_balance = 0.0
+        foreach(output_info_elem -> sum+=output_info_elem[output_str].value , user_outputs_info_array)
+        
+        return user_balance, user_outputs_info_array
     end
 
     # Busca el correspondiente bloque e imprime su informacion. FAIl si no lo encuentra
@@ -105,6 +124,36 @@ module ChainModule
     # Devuelve la blockchain convertida a string para salvarla
     function Save(chain::Chain)
         return ToString(chain)
+    end
+
+    # Busca todos los inputs asociados al usuario en la blockchain y en la mempool
+    function FindInputsByAddr(chain::Chain, addr::String)
+        found_inputs = Array{BlockModule.TransactionModule.InputModule.Input}(undef, 0)
+
+        # Se busca primero en la blockchain
+        for block_iter in chain.blocks_array
+            append!(found_inputs, BlockModule.FindInputsByAddr(block_iter, addr))
+        end
+
+        # Se completa la busqueda buscando en la mempool
+        vcat(found_inputs, BlockModule.FindInputsByAddr(chain.mempool, addr))
+
+        return found_inputs
+    end
+
+    # Busca todos los ouputs info asociados al usuario en la blockchain y en la mempool
+    function FindOutputsInfoByAddr(chain::Chain, addr::String)
+        outputs_info = Array{Dict{String, Any}}(undef, 0)
+
+        # Se busca primero en la blockchain
+        for block_element in chain.blocks_array
+            append!(outputs_info, BlockModule.FindOutputsInfoByAddr(block_element, addr))
+        end
+
+        # Se completa la busqueda buscando en la mempool
+        append!(outputs_info, BlockModule.FindOutputsInfoByAddr(chain.mempool, addr))
+
+        return outputs_info
     end
 
     # Agregar nuevo block a la Blockchain ---------------------------------------------------------

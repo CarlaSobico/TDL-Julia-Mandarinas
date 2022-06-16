@@ -7,99 +7,71 @@
 """
 
 include("chain.jl")
-include("transaction.jl")
 include("util.jl")
 
 # Using
 import .ChainModule
-import .TransactionModule
 
 # Functions
 function main()
 
-    println("Inicio")
+    println("Inicio")   
 
     # Create BlockChain
     blockchain = ChainModule.Chain()
 
-    # Init Blockchain con bloque genesis
-    ChainModule.Init(blockchain, "Carla", 1000, 2)
+    # Create Blocks
+    block1 = ChainModule.BlockModule.Block()
+    block2 = ChainModule.BlockModule.Block()
+    block3 = ChainModule.BlockModule.Block()
 
-    # Transfer
+    # Some Outputs
+    Output1 = ChainModule.BlockModule.TransactionModule.OutputModule.Output(10, "Carla")
+    Output2 = ChainModule.BlockModule.TransactionModule.OutputModule.Output(20, "Carla")
+    Output3 = ChainModule.BlockModule.TransactionModule.OutputModule.Output(23, "Carla")
+    Output4 = ChainModule.BlockModule.TransactionModule.OutputModule.Output(20, "Fran")
+    Output5 = ChainModule.BlockModule.TransactionModule.OutputModule.Output(50, "Quattro")
+    Output6 = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1, "Fran")
+    Output7 = ChainModule.BlockModule.TransactionModule.OutputModule.Output(100, "Quattro")
+
+    # Some Inputs 
+    Input1 = ChainModule.BlockModule.TransactionModule.InputModule.Input("tx_id_1", 1, "Quattro")
+    Input2 = ChainModule.BlockModule.TransactionModule.InputModule.Input("tx_id_1", 2, "Quattro")
+    Input3 = ChainModule.BlockModule.TransactionModule.InputModule.Input("tx_id_1", 3, "Carla")
+    Input4 = ChainModule.BlockModule.TransactionModule.InputModule.Input("tx_id_1", 4, "Quattro")
+    Input5 = ChainModule.BlockModule.TransactionModule.InputModule.Input("tx_id_1", 5, "Carla")
+
+    # Transactions
+    tx1 = ChainModule.BlockModule.TransactionModule.Tx()
+    tx2 = ChainModule.BlockModule.TransactionModule.Tx()
+    tx3 = ChainModule.BlockModule.TransactionModule.Tx()
+
+    # Add them to the blockchain
+    ChainModule.BlockModule.TransactionModule.AddInput(tx1, Input1)
+    ChainModule.BlockModule.TransactionModule.AddInput(tx1, Input2)
+    ChainModule.BlockModule.TransactionModule.AddInput(tx1, Input3)
+    ChainModule.BlockModule.TransactionModule.AddOutput(tx2, Output7)
+
+    ChainModule.BlockModule.TransactionModule.AddInput(tx2, Input1)
+    ChainModule.BlockModule.TransactionModule.AddInput(tx2, Input2)
+    ChainModule.BlockModule.TransactionModule.AddInput(tx2, Input3)
+    ChainModule.BlockModule.TransactionModule.AddOutput(tx2, Output1)
+    ChainModule.BlockModule.TransactionModule.AddOutput(tx2, Output5)
+    ChainModule.BlockModule.TransactionModule.AddOutput(tx2, Output3)
+
+    
+    ChainModule.BlockModule.AddTx(block1, tx1)
+    ChainModule.BlockModule.AddTx(block1, tx2)
+    ChainModule.BlockModule.AddTx(block2, tx3)
+
+    ChainModule.AddBlock(blockchain, block1)
+    ChainModule.AddBlock(blockchain, block2)
+    ChainModule.AddBlock(blockchain, block3)
+
     destinations = Array{Dict{String, Any}}(undef, 0)
-    push!(destinations, Dict{String, Any}(dest_str => "Fran", value_str => 20))
-    push!(destinations, Dict{String, Any}(dest_str => "Quattro", value_str => 5))
-    push!(destinations, Dict{String, Any}(dest_str => "Lola", value_str => 50))
+    push!(destinations, Dict(dest_str => "Fran", value_str => 10.0))
+    ChainModule.Transfer(blockchain, "Quattro", destinations)
 
-    ChainModule.Transfer(blockchain, "Carla", destinations)
-
-    # Mine
-    bits = 5
-    blockchain.mempool.txn_count = 1
-    ChainModule.MineAndAddMempool(blockchain, bits)
-
-    # Find Block
-    println("FindBlock = ", ChainModule.FindBlock(blockchain, "block_id"))
-
-    # # Create Transaction
-    # tx_obj = TransactionModule.Tx()
-
-    # # Initialize some Inputs
-    # input_obj = TransactionModule.InputModule.Input("tx_id_1", 2, "Carla")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # input_obj = TransactionModule.InputModule.Input("tx_id_2", 1, "Carla")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # input_obj = TransactionModule.InputModule.Input("tx_id_3", 5, "Fran")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # input_obj = TransactionModule.InputModule.Input("tx_id_4", 1, "Carla")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # # Some Default Inputs
-    # for i in 1:5
-    #     input_obj = TransactionModule.InputModule.Input()
-    #     TransactionModule.AddInput(tx_obj, input_obj)
-    # end
-
-    # # Initialize Some Outputs
-    # output_obj = TransactionModule.OutputModule.Output(100, "Carla")
-    # TransactionModule.AddOutput(tx_obj, output_obj)
-
-    # output_obj = TransactionModule.OutputModule.Output(1500, "4")
-    # TransactionModule.AddOutput(tx_obj, output_obj)
-
-    # # Some Default Outputs
-    # for i in 1:3
-    #     output_obj = TransactionModule.OutputModule.Output()
-    #     TransactionModule.AddOutput(tx_obj, output_obj)
-    # end
-
-    # # Print Transaccion
-    # println("Print Transaction = \n", TransactionModule.ToString(tx_obj))
-
-    # # Look for outpoints
-    # outpoints_array = TransactionModule.FindOutpointsByAddr(tx_obj, "Carla")
-    # println("FindOutpointsByAddr = ")
-    # for outpoint in outpoints_array
-    #     println(outpoint[tx_id_str], " ", outpoint[idx_str])
-    # end
-
-    # # Look for inputs
-    # inputs_array = TransactionModule.FindInputsByAddr(tx_obj, "Fran")
-    # println("FindInputsByAddr = ")
-    # for input in inputs_array
-    #     println(input.tx_id, " ", input.idx, " ", input.addr)
-    # end
-
-    # # Look for outputs
-    # outputs_array = TransactionModule.FindOutputsByAddr(tx_obj, "Carla")
-    # println("FindOutputsByAddr = ")
-    # for output in outputs_array
-    #     println(output.value, " ", output.addr)
-    # end
-    # # End
     println("Fin")
 end
 
