@@ -33,7 +33,7 @@ function ToString(block::Block)
     nonce_string = string(block.nonce)
     txn_count_string = string(block.txn_count)
     txns_string = ArrayTxToString(block.txns)
-    return string(block.prev_block, "\n", block.txns_hash, "\n", bits_string, "\n", nonce_string, "\n", txn_count_string, "\n", txns_string, "\n")
+    return string(block.prev_block, "\n", block.txns_hash, "\n", bits_string, "\n", nonce_string, "\n", txn_count_string, "\n", txns_string)
 end
 
 function ArrayTxToString(txns::Array{TransactionModule.Tx})
@@ -45,19 +45,28 @@ function ArrayTxToString(txns::Array{TransactionModule.Tx})
 end
 
 function FindInputsByAddr(block::Block, addr::String)
-    found_inputs::Array{TransactionModule.InputModule.Input}
-    for tx_iter in Block.txns
-        found_inputs = push!(found_inputs, TransactionModule.FindInputsByAddr(tx_iter, addr))
+    found_inputs = Array{TransactionModule.InputModule.Input}(undef, 0)
+    for tx_iter in block.txns
+        append!(found_inputs, TransactionModule.FindInputsByAddr(tx_iter, addr))
     end
     return found_inputs
 end
 
 function FindOutputsByAddr(block::Block, addr::String)
-    found_outputs::Array{TransactionModule.OutputModule.Output}
+    found_outputs = Array{TransactionModule.OutputModule.Output}(undef, 0)
     for tx_iter in Block.txns
-        found_outputs = push!(found_outputs, TransactionModule.FindOutputsByAddr(tx_iter, addr))
+        append!(found_outputs, TransactionModule.FindOutputsByAddr(tx_iter, addr))
     end
     return found_outputs
+end
+
+function FindOutputsInfoByAddr(block::Block, addr::String)
+    outputs_info = Array{Dict{String, Any}}(undef, 0)
+    for tx_iter in block.txns
+        append!(outputs_info, TransactionModule.FindOutputsInfoByAddr(tx_iter, addr))
+    end
+    
+    return outputs_info
 end
 
 function FindTx(block::Block, addr::String)

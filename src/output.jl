@@ -4,7 +4,7 @@ module OutputModule
 
 # Structs
 mutable struct Output
-    value::Int64  # La cantidad de Algocoins a transferir en este output
+    value::Float64  # La cantidad de Algocoins a transferir en este output
     addr::String # La direccion de origen de los fondos (que debe coincidir con la direccion del output referenciado)
 
     Output(value=0, addr="default_addr") = new(value, addr)

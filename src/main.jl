@@ -7,100 +7,156 @@
 """
 
 include("chain.jl")
-include("transaction.jl")
 include("util.jl")
 
 # Using
 import .ChainModule
-import .TransactionModule
 
 # Functions
+
+function Init(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+    println("Init")
+end
+
+function Transfer(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+
+    user_source = HashString( string(inputs_string[2]))
+    destinations_array = Array{Dict{String, Any}}(undef, 0)
+
+    i = 3
+    while i < length(inputs_string)
+        
+        addr = HashString(string(inputs_string[i]))
+        i += 1
+        value = parse(Float64, inputs_string[i])
+        i += 1
+
+        push!(destinations_array, Dict(addr_str => addr, value_str => value))
+    end
+
+    result = ChainModule.Transfer(chain, user_source, destinations_array)
+
+    println(result)
+end
+
+function Mine(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+
+    println("Mine")
+
+end
+
+function Balance(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+    user_addr = HashString(string(inputs_string[2]))
+
+    result, outputs_info_array = ChainModule.GetBalance(chain, user_addr)
+
+    println(result)
+end
+
+function Txn(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+    println("Txn")
+end
+
+function Block(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+    println("Block")
+end
+
+function Save(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+    println(ChainModule.Save(chain))
+end
+
 function main()
 
-    println("Inicio")
+    println("Inicio, ingrese un comando...")   
 
-    # Create BlockChain
+    # Se crea la blockchain
     blockchain = ChainModule.Chain()
 
-    # Init Blockchain con bloque genesis
-    ChainModule.Init(blockchain, "Carla", 1000, 2)
+    # Diccionario de comandos
+    commands_dict = Dict( init_command => Init
+                        , transfer_command => Transfer
+                        , mine_command => Mine
+                        , balance_command => Balance
+                        , txn_command => Txn
+                        , block_command => Block
+                        , save_command => Save)
 
-    # Transfer
-    destinations = Array{Dict{String, Any}}(undef, 0)
-    push!(destinations, Dict{String, Any}(dest_str => "Fran", value_str => 20))
-    push!(destinations, Dict{String, Any}(dest_str => "Quattro", value_str => 5))
-    push!(destinations, Dict{String, Any}(dest_str => "Lola", value_str => 50))
 
-    ChainModule.Transfer(blockchain, "Carla", destinations)
+    # Bloque genesis trucho - Eliminar cuando comando mine este creado
+    genesis_block = ChainModule.BlockModule.Block()
+    output = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1000, HashString("banco"))
+    input = ChainModule.BlockModule.TransactionModule.InputModule.Input()
+    tx = ChainModule.BlockModule.TransactionModule.Tx()
+    ChainModule.BlockModule.TransactionModule.AddInput(tx, input)
+    ChainModule.BlockModule.TransactionModule.AddOutput(tx, output)
+    ChainModule.BlockModule.AddTx(genesis_block, tx)
+    ChainModule.AddBlock(blockchain, genesis_block)
 
-    # Mine
-    bits = 5
-    blockchain.mempool.txn_count = 1
-    ChainModule.MineAndAddMempool(blockchain, bits)
+    while true
 
-    # Find Block
-    println("FindBlock = ", ChainModule.FindBlock(blockchain, "block_id"))
+        # Leer de stdin
+        input_strings = split(readline())
 
-    # # Create Transaction
-    # tx_obj = TransactionModule.Tx()
+        command_str = input_strings[1]
+        command_function = get(commands_dict, command_str, false)
 
-    # # Initialize some Inputs
-    # input_obj = TransactionModule.InputModule.Input("tx_id_1", 2, "Carla")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # input_obj = TransactionModule.InputModule.Input("tx_id_2", 1, "Carla")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # input_obj = TransactionModule.InputModule.Input("tx_id_3", 5, "Fran")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # input_obj = TransactionModule.InputModule.Input("tx_id_4", 1, "Carla")
-    # TransactionModule.AddInput(tx_obj, input_obj)
-
-    # # Some Default Inputs
-    # for i in 1:5
-    #     input_obj = TransactionModule.InputModule.Input()
-    #     TransactionModule.AddInput(tx_obj, input_obj)
-    # end
-
-    # # Initialize Some Outputs
-    # output_obj = TransactionModule.OutputModule.Output(100, "Carla")
-    # TransactionModule.AddOutput(tx_obj, output_obj)
-
-    # output_obj = TransactionModule.OutputModule.Output(1500, "4")
-    # TransactionModule.AddOutput(tx_obj, output_obj)
-
-    # # Some Default Outputs
-    # for i in 1:3
-    #     output_obj = TransactionModule.OutputModule.Output()
-    #     TransactionModule.AddOutput(tx_obj, output_obj)
-    # end
-
-    # # Print Transaccion
-    # println("Print Transaction = \n", TransactionModule.ToString(tx_obj))
-
-    # # Look for outpoints
-    # outpoints_array = TransactionModule.FindOutpointsByAddr(tx_obj, "Carla")
-    # println("FindOutpointsByAddr = ")
-    # for outpoint in outpoints_array
-    #     println(outpoint[tx_id_str], " ", outpoint[idx_str])
-    # end
-
-    # # Look for inputs
-    # inputs_array = TransactionModule.FindInputsByAddr(tx_obj, "Fran")
-    # println("FindInputsByAddr = ")
-    # for input in inputs_array
-    #     println(input.tx_id, " ", input.idx, " ", input.addr)
-    # end
-
-    # # Look for outputs
-    # outputs_array = TransactionModule.FindOutputsByAddr(tx_obj, "Carla")
-    # println("FindOutputsByAddr = ")
-    # for output in outputs_array
-    #     println(output.value, " ", output.addr)
-    # end
-    # # End
+        if command_function == false
+            println("El comando [ ", command_str, " ] no es valido.") 
+        else
+            command_function(blockchain, input_strings)
+        end
+    end
+    
     println("Fin")
+
+
+   
+
+    # # Bloque genesis
+    # genesis_block = ChainModule.BlockModule.Block()
+    # output = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1000, "Banco")
+    # input = ChainModule.BlockModule.TransactionModule.InputModule.Input()
+    # tx = ChainModule.BlockModule.TransactionModule.Tx()
+    # ChainModule.BlockModule.TransactionModule.AddInput(tx, input)
+    # ChainModule.BlockModule.TransactionModule.AddOutput(tx, output)
+    # ChainModule.BlockModule.AddTx(genesis_block, tx)
+    # ChainModule.AddBlock(blockchain, genesis_block)
+
+    # # Destinations
+    # destinations = Array{Dict{String, Any}}(undef, 0)
+    # push!(destinations, Dict(addr_str => "Fran", value_str => 20.0))
+    # push!(destinations, Dict(addr_str => "Carla", value_str => 55.0))
+    # push!(destinations, Dict(addr_str => "Quattro", value_str => 200.0))
+
+    # # Transfer
+    # ChainModule.Transfer(blockchain, "Banco", destinations)
+
+    # for dst_iter in destinations 
+
+    #     balance, outputs_info = ChainModule.GetBalance(blockchain, dst_iter[addr_str])
+
+    #     println("Balance de ", dst_iter[addr_str], " es " , balance)
+    # end
+
+    # destinations = Array{Dict{String, Any}}(undef, 0)
+    # push!(destinations, Dict(addr_str => "Lola", value_str => 12.0))
+    # push!(destinations, Dict(addr_str => "Fran", value_str => 65.0))
+
+    # ChainModule.MineAndAddMempool(blockchain, 2)
+
+    # ChainModule.Transfer(blockchain, "Quattro", destinations)
+
+    # for dst_iter in destinations 
+
+    #     balance, outputs_info = ChainModule.GetBalance(blockchain, dst_iter[addr_str])
+
+    #     println("Balance de ", dst_iter[addr_str], " es " , balance)
+    # end
+    # balance, outputs_info = ChainModule.GetBalance(blockchain, "Quattro")
+
+    #     println("Balance de ", "Quattro", " es " , balance)
+
+    # println(ChainModule.Save(blockchain))
 end
 
 
