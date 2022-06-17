@@ -47,7 +47,10 @@ module ChainModule
         if needed_coins > user_balance
             return false
         else
-            # TODO Crear transaccion a partir de user_available_outputs y agregarla a la mempool
+            # Se crea la transaccion a partir de los ouputs disponibles del usuario y se agrega a la mepool
+            tx = BlockModule.TransactionModule.CreateTransaction(user_source, needed_coins, user_available_outputs, destinations_array)
+            BlockModule.AddTx(chain.mempool, tx)
+
             return true
         end
     end
@@ -89,7 +92,7 @@ module ChainModule
 
         # Se calcula el balance a partir del array de outputs no referenciados en ningun outpoint
         user_balance = 0.0
-        foreach(output_info_elem -> sum += output_info_elem[output_str].value, user_outputs_info_array)
+        foreach(output_info_elem -> user_balance += output_info_elem[output_str].value, user_outputs_info_array)
         
         return user_balance, user_outputs_info_array
     end
