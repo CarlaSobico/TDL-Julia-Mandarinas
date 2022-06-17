@@ -104,28 +104,27 @@ function ToString(tx::Tx)
     return string(tx.n_tx_in, '\n', inputs_string, tx.n_tx_out, '\n', outputs_string)
 end
 
-function CreateTransaction(user_source::String, amount_of_coins::Float64, available_outputs_dict::Array{Dict{String, Any}}, destinations_array::Array{Dict{String, Any}})
+function CreateTransaction(user_source::String, amount_of_coins::Float64, available_outputs_array::Array{Dict{String, Any}}, destinations_array::Array{Dict{String, Any}})
 
     tx = Tx()
     
     needed_coins = amount_of_coins
-    # Se crean los inputs a aprtir de los available outputs de donde se pueden sacar coins
-    for output_dict in available_outputs_dict
 
-        input = InputModule.Input(output_dict[tx_id_str], output_dict[idx_str], user_source)
+    # Se crean los inputs a partir de los available outputs de donde se pueden sacar coins
+    for output_info in available_outputs_array
+
+        input = InputModule.Input(output_info[tx_id_str], output_info[idx_str], user_source)
         AddInput(tx, input)
 
-        output_coins = output_dict[output_str].value
+        output_coins = output_info[output_str].value
         needed_coins -= output_coins
 
         if needed_coins <= 0
             break
         end
-        output_coins = available_outputs_dict[value_str]
-        needed_coins -= output_coins
     end
 
-    # Se crean los outputs a partir de los destinations y del vuelto sobrante
+    # Se crean los outputs a partir de los destinations y del vuelto
     if needed_coins != 0
         output = OutputModule.Output(abs(needed_coins), user_source)
         AddOutput(tx, output)
@@ -138,4 +137,5 @@ function CreateTransaction(user_source::String, amount_of_coins::Float64, availa
 
     return tx
 end
+
 end # TransactionModule

@@ -33,7 +33,7 @@ function ToString(block::Block)
     nonce_string = string(block.nonce)
     txn_count_string = string(block.txn_count)
     txns_string = ArrayTxToString(block.txns)
-    return string(block.prev_block, "\n", block.txns_hash, "\n", bits_string, "\n", nonce_string, "\n", txn_count_string, "\n", txns_string, "\n")
+    return string(block.prev_block, "\n", block.txns_hash, "\n", bits_string, "\n", nonce_string, "\n", txn_count_string, "\n", txns_string)
 end
 
 function ArrayTxToString(txns::Array{TransactionModule.Tx})

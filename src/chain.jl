@@ -42,17 +42,19 @@ module ChainModule
             needed_coins += destinations_iter[value_str]
         end
 
+        # Balance del usuario y los outputs no referenciados
         user_balance, user_available_outputs = GetBalance(chain, user_source)
 
-        if needed_coins > user_balance
-            return false
-        else
-            # Se crea la transaccion a partir de los ouputs disponibles del usuario y se agrega a la mepool
-            tx = BlockModule.TransactionModule.CreateTransaction(user_source, needed_coins, user_available_outputs, destinations_array)
-            BlockModule.AddTx(chain.mempool, tx)
-
-            return true
+        # Se verifica que se haya encontrado al usuario y que tenga suficientes coins
+        if user_balance == fail_str || needed_coins > user_balance
+            return fail_str
         end
+
+        # Se crea la transaccion a partir de los ouputs disponibles del usuario y se agrega a la mepool
+        tx = BlockModule.TransactionModule.CreateTransaction(user_source, needed_coins, user_available_outputs, destinations_array)
+        BlockModule.AddTx(chain.mempool, tx)
+
+        return HashString(BlockModule.TransactionModule.ToString(tx))
     end
 
     # Agrega lo guardado en la mempool hasta el momento en la Blockchain minando el bloque con bits de dificultad
@@ -76,10 +78,13 @@ module ChainModule
         # Se obtienen los inputs del usuario
         user_inputs_array = FindInputsByAddr(chain, user_source)
 
-        # Se obtienen los outputs del user_source
+        # Se obtienen la info de los outputs del usuario
         user_outputs_info_array = FindOutputsInfoByAddr(chain, user_source)
 
-        # TODO: si ambos array estan vacios, el usuario no existe
+        # Se verifica que el usuario exista
+        if (length(user_inputs_array) == 0) && (length(user_outputs_info_array) == 0)
+            return fail_str, user_outputs_info_array
+        end
 
         # Se eliminan los outputs que ya fueron referenciados a un input
         for input_iter in user_inputs_array
@@ -90,7 +95,7 @@ module ChainModule
             deleteat!(user_outputs_info_array, indexes_to_delete)
         end
 
-        # Se calcula el balance a partir del array de outputs no referenciados en ningun outpoint
+        # Se calcula el balance a partir del array de outputs no referenciados
         user_balance = 0.0
         foreach(output_info_elem -> user_balance += output_info_elem[output_str].value, user_outputs_info_array)
         
