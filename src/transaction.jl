@@ -104,6 +104,7 @@ function ToString(tx::Tx)
     return string(tx.n_tx_in, '\n', inputs_string, tx.n_tx_out, '\n', outputs_string)
 end
 
+# Crea una transaccion a partir de los destintarios y la info de los outputs disponibles para el user_source
 function CreateTransaction(user_source::String, amount_of_coins::Float64, available_outputs_array::Array{Dict{String, Any}}, destinations_array::Array{Dict{String, Any}})
 
     tx = Tx()
@@ -135,6 +136,30 @@ function CreateTransaction(user_source::String, amount_of_coins::Float64, availa
         AddOutput(tx, output)
     end
 
+    return tx
+end
+
+# Lee una transaccion de un archivo
+function LoadTx(file::IOStream)
+
+    tx = Tx()
+
+    n_tx_in = parse(Int, readline(file))
+    for _ in 1:n_tx_in
+        input = InputModule.LoadInput(file)
+        AddInput(tx, input)
+    end
+
+    n_tx_out = parse(Int, readline(file))
+    for _ in 1:n_tx_out
+        output = OutputModule.LoadOutput(file)
+        AddOutput(tx, output)
+    end
+
+    if n_tx_out != length(tx.outputs_array) || n_tx_in != length(tx.inputs_array)
+        return false
+    end
+    
     return tx
 end
 

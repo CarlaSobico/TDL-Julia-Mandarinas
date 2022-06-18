@@ -19,4 +19,15 @@ function ToString(output::Output)
     return string(value_string, " ", output.addr, "\n")
 end
 
+
+function LoadOutput(file::IOStream)
+    
+    output = Output()
+
+    output.value = parse(Float64, readuntil(file," "))
+    output.addr = readline(file)
+
+    return output
+end
+
 end # module Output

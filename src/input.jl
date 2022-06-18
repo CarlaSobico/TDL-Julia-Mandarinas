@@ -20,4 +20,15 @@ function ToString(input::Input)
     return string(input.tx_id, " ", idx_string, " ", input.addr, "\n")
 end
 
+function LoadInput(file::IOStream)
+    
+    input = Input()
+
+    input.tx_id = readuntil(file," ")
+    input.idx = parse(Int, readuntil(file," "))
+    input.addr = readline(file)
+
+    return input
+end
+
 end # InputModule

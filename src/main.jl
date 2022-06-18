@@ -41,7 +41,7 @@ end
 
 function Mine(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 
-    println("Mine")
+    ChainModule.MineAndAddMempool(chain, 2)
 
 end
 
@@ -62,7 +62,46 @@ function Block(chain::ChainModule.Chain, inputs_string::Array{SubString{String}}
 end
 
 function Save(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    println(ChainModule.Save(chain))
+    
+    blockchain_string = ChainModule.Save(chain)
+
+    file_name = string(default_path, inputs_string[2])
+
+    # Se chequea si tiene extension el nombre
+    split = splitext(file_name)
+    if split[2] == ""
+        file_name = string(file_name, ".txt")
+    end
+
+    # se escribe en el archivo
+    file = open(file_name, "w")
+    write(file, blockchain_string)
+    close(file)
+
+    println(ok_str)
+    
+end
+
+function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
+
+    file_name = string(default_path, inputs_string[2])
+
+    # Se chequea si tiene extension el nombre
+    split = splitext(file_name)
+    if split[2] == ""
+        file_name = string(file_name, ".txt")
+    end
+
+    if isfile(file_name)
+        
+        file = open(file_name, "r")
+        result = ChainModule.Load(chain, file)
+    else
+        result = fail_str
+    end
+
+    println(result)
+
 end
 
 function main()
@@ -79,8 +118,8 @@ function main()
                         , balance_command => Balance
                         , txn_command => Txn
                         , block_command => Block
-                        , save_command => Save)
-
+                        , save_command => Save
+                        , load_command => Load)
 
     # Bloque genesis trucho - Eliminar cuando comando mine este creado
     genesis_block = ChainModule.BlockModule.Block()

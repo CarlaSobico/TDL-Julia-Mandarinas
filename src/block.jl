@@ -79,4 +79,30 @@ function FindTx(block::Block, addr::String)
     end
     return false
 end
+
+function LoadBlock(file::IOStream)
+    
+    block = Block()
+    block.prev_block = readline(file)
+    block.txns_hash = readline(file)
+    block.bits = parse(Int, readline(file))
+    block.nonce = parse(Int, readline(file))
+
+    txn_count = parse(Int, readline(file))
+
+    for _ in 1:txn_count
+        tx = TransactionModule.LoadTx(file)
+        if tx == false
+            return false
+        end
+        AddTx(block, tx)
+    end
+
+    if txn_count != length(block.txns)
+        return false
+    end
+
+    return block
+end
+
 end # module Block
