@@ -136,6 +136,25 @@ module ChainModule
         return ToString(chain)
     end
 
+    # Carca en chain la blockchain que se lee desde el archivo
+    function Load(chain::Chain, file::IOStream)
+       
+        loaded_blockchain = Chain()
+
+        while !eof(file)
+            block = BlockModule.LoadBlock(file)
+            if block == false
+                return fail_str
+            end
+            AddBlock(loaded_blockchain, block)
+        end
+
+        chain.blocks_array = loaded_blockchain.blocks_array
+        chain.mempool = loaded_blockchain.mempool
+
+        return ok_str
+    end
+
     # Busca todos los inputs asociados al usuario en la blockchain y en la mempool
     function FindInputsByAddr(chain::Chain, addr::String)
 
