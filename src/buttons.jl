@@ -56,6 +56,8 @@ function create_gui(commands_dict, blockchain)
     # RESPOND TO BUTTON CLICKS AND EVENTS
     button_setfile_triggered = signal_connect(execute_button, "clicked") do widget
         parameter_str = get_gtk_property(command_entry, :text, String)
+        set_gtk_property!(command_entry, :text, "")
+
         command_str = Gtk.bytestring(GAccessor.active_text(command_options))
         final_command_str = command_str * " " * parameter_str
 
