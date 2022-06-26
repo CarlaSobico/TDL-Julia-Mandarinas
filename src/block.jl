@@ -113,11 +113,14 @@ function LoadBlock(file::IOStream)
 end
 
 function MineBlock(block::Block, bits::Int)
-    proof_of_work = "0"^bits * ".*"
-    block = chain.blocks_array[0]
-    while (c)
-    
+    block.txns_hash = HashString(ArrayTxToString(block.txns))
+    proof_of_work = r"^" * r"0"^bits * r".*"
+    hash = HashString(ToString(block))
+    while (match(proof_of_work, hash) == nothing)
+        block.nonce += 1
+        hash = HashString(ToString(block))
+    end
+    return hash
 end
-
 
 end # module Block

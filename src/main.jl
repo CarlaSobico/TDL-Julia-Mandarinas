@@ -15,8 +15,8 @@ import .ChainModule
 # Functions
 
 function Init(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    result = ChainModule.Init(chain, string(inputs_string[2]), string(inputs_string[3]), string(inputs_string[4]))
-    return result
+    result = ChainModule.Init(chain,HashString(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
+    println(result)
 end
 
 function Transfer(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
@@ -116,14 +116,14 @@ function main()
     commands_dict = Dict(init_command => Init, transfer_command => Transfer, mine_command => Mine, balance_command => Balance, txn_command => Txn, block_command => Block, save_command => Save, load_command => Load)
 
     # Bloque genesis trucho - Eliminar cuando comando mine este creado
-    genesis_block = ChainModule.BlockModule.Block()
-    output = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1000, HashString("banco"))
-    input = ChainModule.BlockModule.TransactionModule.InputModule.Input()
-    tx = ChainModule.BlockModule.TransactionModule.Tx()
-    ChainModule.BlockModule.TransactionModule.AddInput(tx, input)
-    ChainModule.BlockModule.TransactionModule.AddOutput(tx, output)
-    ChainModule.BlockModule.AddTx(genesis_block, tx)
-    ChainModule.AddBlock(blockchain, genesis_block)
+    # genesis_block = ChainModule.BlockModule.Block()
+    # output = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1000, HashString("banco"))
+    # input = ChainModule.BlockModule.TransactionModule.InputModule.Input()
+    # tx = ChainModule.BlockModule.TransactionModule.Tx()
+    # ChainModule.BlockModule.TransactionModule.AddInput(tx, input)
+    # ChainModule.BlockModule.TransactionModule.AddOutput(tx, output)
+    # ChainModule.BlockModule.AddTx(genesis_block, tx)
+    # ChainModule.AddBlock(blockchain, genesis_block)
 
     while true
 

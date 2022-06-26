@@ -11,7 +11,7 @@ mutable struct Output
 end
 
 function Genesis(value::Float64, addr::String)
-    return Output(value, addr) = new(value, addr)
+    return Output(value, addr)
 end
 
 function CompareAddr(output::Output, addr::String)

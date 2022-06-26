@@ -12,7 +12,7 @@ mutable struct Input
 end
 
 function Genesis()
-    return Input(tx_id, idx, addr=) = new("", 0, "")
+    return Input("F"^32, 0, "F"^32)
 end
 
 function CompareAddr(input::Input, addr::String)
@@ -25,11 +25,11 @@ function ToString(input::Input)
 end
 
 function LoadInput(file::IOStream)
-    
+
     input = Input()
 
-    input.tx_id = readuntil(file," ")
-    input.idx = parse(Int, readuntil(file," "))
+    input.tx_id = readuntil(file, " ")
+    input.idx = parse(Int, readuntil(file, " "))
     input.addr = readline(file)
 
     return input

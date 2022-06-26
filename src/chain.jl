@@ -21,7 +21,7 @@ end
 # Functions/Methods
 
 # Iniciar BlockChain. Agregaga bloque genesis
-function Init(chain::Chain, user::String, value::Int, bits::Int)
+function Init(chain::Chain, user::String, value::Float64, bits::Int)
 
     # Se borra la actual Blockchain y la mempool
     empty!(chain.blocks_array)
@@ -31,9 +31,9 @@ function Init(chain::Chain, user::String, value::Int, bits::Int)
     genesis_block = BlockModule.Genesis(value, user)
     AddBlock(chain, genesis_block)
     
-    BlockModule.Mine(genesis_block, bits)
+    BlockModule.MineBlock(genesis_block, bits)
 
-    return HashString(BlockModule.ToString(block))
+    return HashString(BlockModule.ToString(genesis_block))
 end
 
 # Transfiere coins del usuario source a los destinatarios (si es posible)
@@ -66,8 +66,7 @@ function MineAndAddMempool(chain::Chain, bits::Int)
     # Solo se agrega si la mempool tiene alguna transaccion
     if chain.mempool.txn_count > 0
 
-        # TODO: Lamar a Mine function de BlockModule para que mine la mepool
-        #BlockModule.Mine(chain.mempool, bits)
+        BlockModule.MineBlock(chain.mempool, bits)
         AddBlock(chain, chain.mempool)
 
         # Se reinicia la mepool
