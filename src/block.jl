@@ -5,6 +5,7 @@ include("transaction.jl")
 include("util.jl")
 
 # Imports
+import SHA
 import .TransactionModule
 
 # Structs
@@ -114,13 +115,30 @@ end
 
 function MineBlock(block::Block, bits::Int)
     block.txns_hash = HashString(ArrayTxToString(block.txns))
-    proof_of_work = r"^" * r"0"^bits * r".*"
-    hash = HashString(ToString(block))
-    while (match(proof_of_work, hash) == nothing)
+    while (CheckBits(bits, ToString(block)) == false)
         block.nonce += 1
-        hash = HashString(ToString(block))
     end
-    return hash
+    return HashString(ToString(block))
+end
+
+function CheckBits(bits::Int, has::String)
+    entero = bits ÷ 8
+    resto = bits % 8
+    cero = UInt8(0)
+    unos = UInt8(0b11111111)
+    hash = SHA.sha256(has)
+    for i in 1:entero
+        if (unos & hash[i] != cero)
+            return false
+        end
+    end
+    restos = 2^resto - 1
+    restoss = UInt8(restos)
+    if (restoss & hash[entero+1] == restoss)
+        return true
+    else
+        return false
+    end
 end
 
 end # module Block

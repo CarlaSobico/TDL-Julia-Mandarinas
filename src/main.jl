@@ -15,7 +15,7 @@ import .ChainModule
 # Functions
 
 function Init(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    result = ChainModule.Init(chain,HashString(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
+    result = ChainModule.Init(chain, HashString(string(inputs_string[2])), parse(Float64, inputs_string[3]), parse(Int, inputs_string[4]))
     println(result)
 end
 
@@ -42,8 +42,9 @@ end
 
 function Mine(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 
-    ChainModule.MineAndAddMempool(chain, 2)
+    result = ChainModule.MineAndAddMempool(chain, parse(Int, inputs_string[2]))
 
+    println(result)
 end
 
 function Balance(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})

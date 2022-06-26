@@ -30,7 +30,7 @@ function Init(chain::Chain, user::String, value::Float64, bits::Int)
     # Obtener Genesis Block
     genesis_block = BlockModule.Genesis(value, user)
     AddBlock(chain, genesis_block)
-    
+
     BlockModule.MineBlock(genesis_block, bits)
 
     return HashString(BlockModule.ToString(genesis_block))
@@ -66,12 +66,14 @@ function MineAndAddMempool(chain::Chain, bits::Int)
     # Solo se agrega si la mempool tiene alguna transaccion
     if chain.mempool.txn_count > 0
 
-        BlockModule.MineBlock(chain.mempool, bits)
+        # Se agrega el bloque a la Blockchain
+        result = BlockModule.MineBlock(chain.mempool, bits)
         AddBlock(chain, chain.mempool)
 
         # Se reinicia la mepool
         chain.mempool = BlockModule.Block()
     end
+    return result
 end
 
 # Devuelve la cantidad de coins del usuario. false si no encuentra al usuario y la info de los outputs de donde extraerlos
