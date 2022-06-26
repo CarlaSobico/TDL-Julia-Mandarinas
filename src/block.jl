@@ -112,4 +112,8 @@ function LoadBlock(file::IOStream)
     return block
 end
 
+function MineBlock(block::Block)
+    
+end
+
 end # module Block
