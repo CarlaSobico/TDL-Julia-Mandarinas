@@ -23,6 +23,13 @@ mutable struct Block
     ) = new(prev_block, txns_hash, bits, nonce, txn_count, txns)
 end
 
+function Genesis(value::Float64, addr::String)
+    block = Block()
+    block.prev_block = "F"^32
+    AddTx(block, TransactionModule.Genesis(value, addr))
+    return block
+end
+
 function AddTx(block::Block, txn::TransactionModule.Tx)
     block.txn_count = block.txn_count + 1
     push!(block.txns, txn)
@@ -61,11 +68,11 @@ function FindOutputsByAddr(block::Block, addr::String)
 end
 
 function FindOutputsInfoByAddr(block::Block, addr::String)
-    outputs_info = Array{Dict{String, Any}}(undef, 0)
+    outputs_info = Array{Dict{String,Any}}(undef, 0)
     for tx_iter in block.txns
         append!(outputs_info, TransactionModule.FindOutputsInfoByAddr(tx_iter, addr))
     end
-    
+
     return outputs_info
 end
 
@@ -81,7 +88,7 @@ function FindTx(block::Block, addr::String)
 end
 
 function LoadBlock(file::IOStream)
-    
+
     block = Block()
     block.prev_block = readline(file)
     block.txns_hash = readline(file)

@@ -24,6 +24,17 @@ end
 
 # Functions/Methods
 
+# Transaccion genesis
+function Genesis(value::Float64, addr::String)
+    
+    tx = Tx()
+
+    AddInput(tx, InputModule.Genesis())
+    AddOutput(tx, OutputModule.Genesis(value, addr))
+
+    return tx
+end
+
 # Agregar nuevo input a la transaccion --------------------------------------------------------
 function AddInput(tx::Tx, input::InputModule.Input)
     push!(tx.inputs_array, input)
