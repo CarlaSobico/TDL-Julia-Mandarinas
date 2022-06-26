@@ -31,8 +31,8 @@ function Init(chain::Chain, user::String, value::Int, bits::Int)
     genesis_block = BlockModule.Genesis(value, user)
     AddBlock(chain, genesis_block)
     
-    BlockModule.Mine(chain.mempool, bits)
-    
+    BlockModule.Mine(genesis_block, bits)
+
     return HashString(BlockModule.ToString(block))
 end
 

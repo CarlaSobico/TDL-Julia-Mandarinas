@@ -112,8 +112,12 @@ function LoadBlock(file::IOStream)
     return block
 end
 
-function MineBlock(block::Block)
+function MineBlock(block::Block, bits::Int)
+    proof_of_work = "0"^bits * ".*"
+    block = chain.blocks_array[0]
+    while (c)
     
 end
+
 
 end # module Block
