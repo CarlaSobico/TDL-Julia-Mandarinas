@@ -132,9 +132,9 @@ function CheckBits(bits::Int, has::String)
             return false
         end
     end
-    restos = 2^resto - 1
-    restoss = UInt8(restos)
-    if (restoss & hash[entero+1] == restoss)
+    bin_resto = 2^resto - 1
+    uint_bin_resto = UInt8(bin_resto)
+    if (uint_bin_resto & hash[entero+1] == uint_bin_resto)
         return true
     else
         return false
