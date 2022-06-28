@@ -15,17 +15,18 @@ import .ChainModule
 # Functions
 
 function Init(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    println("Init")
+    result = ChainModule.Init(chain, HashString(string(inputs_string[2])), parse(Float64, inputs_string[3]), parse(Int, inputs_string[4]))
+    println(result)
 end
 
 function Transfer(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 
-    user_source = HashString( string(inputs_string[2]))
-    destinations_array = Array{Dict{String, Any}}(undef, 0)
+    user_source = HashString(string(inputs_string[2]))
+    destinations_array = Array{Dict{String,Any}}(undef, 0)
 
     i = 3
     while i < length(inputs_string)
-        
+
         addr = HashString(string(inputs_string[i]))
         i += 1
         value = parse(Float64, inputs_string[i])
@@ -41,8 +42,9 @@ end
 
 function Mine(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 
-    ChainModule.MineAndAddMempool(chain, 2)
+    result = ChainModule.MineAndAddMempool(chain, parse(Int, inputs_string[2]))
 
+    println(result)
 end
 
 function Balance(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
@@ -62,7 +64,7 @@ function Block(chain::ChainModule.Chain, inputs_string::Array{SubString{String}}
 end
 
 function Save(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    
+
     blockchain_string = ChainModule.Save(chain)
 
     file_name = string(default_path, inputs_string[2])
@@ -79,7 +81,7 @@ function Save(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
     close(file)
 
     println(ok_str)
-    
+
 end
 
 function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
@@ -93,7 +95,7 @@ function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
     end
 
     if isfile(file_name)
-        
+
         file = open(file_name, "r")
         result = ChainModule.Load(chain, file)
     else
@@ -106,30 +108,23 @@ end
 
 function main()
 
-    println("Inicio, ingrese un comando...")   
+    println("Inicio, ingrese un comando...")
 
     # Se crea la blockchain
     blockchain = ChainModule.Chain()
 
     # Diccionario de comandos
-    commands_dict = Dict( init_command => Init
-                        , transfer_command => Transfer
-                        , mine_command => Mine
-                        , balance_command => Balance
-                        , txn_command => Txn
-                        , block_command => Block
-                        , save_command => Save
-                        , load_command => Load)
+    commands_dict = Dict(init_command => Init, transfer_command => Transfer, mine_command => Mine, balance_command => Balance, txn_command => Txn, block_command => Block, save_command => Save, load_command => Load)
 
     # Bloque genesis trucho - Eliminar cuando comando mine este creado
-    genesis_block = ChainModule.BlockModule.Block()
-    output = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1000, HashString("banco"))
-    input = ChainModule.BlockModule.TransactionModule.InputModule.Input()
-    tx = ChainModule.BlockModule.TransactionModule.Tx()
-    ChainModule.BlockModule.TransactionModule.AddInput(tx, input)
-    ChainModule.BlockModule.TransactionModule.AddOutput(tx, output)
-    ChainModule.BlockModule.AddTx(genesis_block, tx)
-    ChainModule.AddBlock(blockchain, genesis_block)
+    # genesis_block = ChainModule.BlockModule.Block()
+    # output = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1000, HashString("banco"))
+    # input = ChainModule.BlockModule.TransactionModule.InputModule.Input()
+    # tx = ChainModule.BlockModule.TransactionModule.Tx()
+    # ChainModule.BlockModule.TransactionModule.AddInput(tx, input)
+    # ChainModule.BlockModule.TransactionModule.AddOutput(tx, output)
+    # ChainModule.BlockModule.AddTx(genesis_block, tx)
+    # ChainModule.AddBlock(blockchain, genesis_block)
 
     while true
 
@@ -140,14 +135,14 @@ function main()
         command_function = get(commands_dict, command_str, false)
 
         if command_function == false
-            println("El comando [ ", command_str, " ] no es valido.") 
+            println("El comando [ ", command_str, " ] no es valido.")
         else
             command_function(blockchain, input_strings)
         end
     end
-    
+
     println("Fin")
-    
+
 end
 
 
