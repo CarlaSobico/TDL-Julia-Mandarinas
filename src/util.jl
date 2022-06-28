@@ -10,7 +10,7 @@ const output_str    = "output"
 
 const fail_str      = "FAIL"
 const ok_str        = "OK"
-const default_path  = ""
+const default_path  = "./profile"
 
 const prev_block_genesis_str = "F" ^ 32
 
