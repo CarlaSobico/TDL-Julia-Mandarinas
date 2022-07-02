@@ -1,0 +1,7 @@
+init banco 1000 2
+transfer banco lola 100
+transfer banco quattro 20
+balance quattro
+balance lola
+balance carla
+mine 2

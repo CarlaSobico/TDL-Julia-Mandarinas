@@ -9,8 +9,11 @@ function create_gui(commands_dict, blockchain)
     textlabel_info = GtkLabel(text_info)
     set_gtk_property!(textlabel_info, :xalign, 0.5) # centers first line
 
-    # Create a button
-    execute_button = GtkButton("Executon Button")
+    # Create am execution button
+    execute_button = GtkButton("Execute Button")
+
+    # Create am execution button
+    select_button = GtkButton("Select File")
 
     # Create the entry point
     command_entry = GtkEntry()
@@ -33,7 +36,7 @@ function create_gui(commands_dict, blockchain)
         push!(command_options, choice)
     end
     # Lets set the active element to be "two"
-    set_gtk_property!(command_options, :active, 1)
+    set_gtk_property!(command_options, :active, 0)
 
 
     # Create grid
@@ -43,6 +46,7 @@ function create_gui(commands_dict, blockchain)
     grid[1, 2] = command_options
     grid[2:3, 2] = command_entry
     grid[4, 2] = execute_button
+    grid[1, 3] = select_button
 
     grid[1:4,4] = scrolledwindow
 
@@ -61,18 +65,30 @@ function create_gui(commands_dict, blockchain)
         command_str = Gtk.bytestring(GAccessor.active_text(command_options))
         final_command_str = command_str * " " * parameter_str
 
-        input_strings = split(final_command_str)
-        command_str = input_strings[1]
-        command_function = get(commands_dict, command_str, false)
-
-        result_str = string(command_function(blockchain, input_strings))
-        set_gtk_property!(textbuffer_results, :text, get_gtk_property(textbuffer_results, :text, String) * "\n" * "Comando: " * final_command_str)
-        set_gtk_property!(textbuffer_results, :text, get_gtk_property(textbuffer_results, :text, String) * "\n" * "Resultado: " * result_str)
+        execute_command(blockchain, commands_dict, textbuffer_results, final_command_str)
     end
     
-    change_dropdown_menu = signal_connect(command_options, "changed") do widget
+    change_dropdown_menu = signal_connect(command_options, "changed") do widgets
         set_gtk_property!(command_entry, :text, "")
     end
+
+    select_file_menu = signal_connect(select_button, "clicked") do widget
+        selected_filepath = open_dialog("SELECT FILE...")
+
+        # ANY CODE YOU LIKE - but until then....
+        try
+            open(selected_filepath, "r") do io
+                str = read(io, String)
+                lines_array = split(str, '\n')
+                for line_iter in lines_array 
+                    execute_command(blockchain, commands_dict, textbuffer_results, string(line_iter))
+                end
+        end
+        catch
+            return "Could not read the file contents."
+        end
+    end
+    
     # condition keeps window open, unless closed by user.
     if !isinteractive()
         c = Condition()
@@ -81,4 +97,17 @@ function create_gui(commands_dict, blockchain)
         end
         wait(c)
     end
+
+end
+
+function execute_command(blockchain, commands_dict, textbuffer_results, line_str::String)
+
+    input_strings = split(line_str)
+    command_str = input_strings[1]
+    command_function = get(commands_dict, command_str, false)
+
+    result_str = string(command_function(blockchain, input_strings))
+    set_gtk_property!(textbuffer_results, :text, get_gtk_property(textbuffer_results, :text, String) * "\n" * "Comando: " * line_str)
+    set_gtk_property!(textbuffer_results, :text, get_gtk_property(textbuffer_results, :text, String) * "\n" * "Resultado: " * result_str)
+
 end

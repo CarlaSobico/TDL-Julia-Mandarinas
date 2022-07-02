@@ -44,7 +44,7 @@ function Mine(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 
     result = ChainModule.MineAndAddMempool(chain, parse(Int, inputs_string[2]))
 
-    println(result)
+    return result
 end
 
 function Balance(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})

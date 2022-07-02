@@ -64,6 +64,8 @@ end
 function MineAndAddMempool(chain::Chain, bits::Int)
 
     # Solo se agrega si la mempool tiene alguna transaccion
+    result = fail_str
+
     if chain.mempool.txn_count > 0
 
         # Se agrega el bloque a la Blockchain
@@ -73,6 +75,7 @@ function MineAndAddMempool(chain::Chain, bits::Int)
         # Se reinicia la mepool
         chain.mempool = BlockModule.Block()
     end
+    
     return result
 end
 

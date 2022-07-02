@@ -133,8 +133,8 @@ function CheckBits(bits::Int, block_string::String)
         end
     end
     bin_remaind = 2^remaind - 1
-    uint_bin_remaind = UInt8(bin_resto)
-    if (uint_bin_remaind & hash[entero+1] == uint_bin_remaind)
+    uint_bin_remaind = UInt8(bin_remaind)
+    if (uint_bin_remaind & hash[quotient+1] == uint_bin_remaind)
         return true
     else
         return false
