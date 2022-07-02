@@ -8,7 +8,7 @@
 
 include("chain.jl")
 include("util.jl")
-include("buttons.jl")
+include("gui.jl")
 # Using
 import .ChainModule
 
