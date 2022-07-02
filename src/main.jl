@@ -112,6 +112,15 @@ function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 
 end
 
+function execute_command_without_gui(blockchain, commands_dict, line_str::String)
+
+    input_strings = split(line_str)
+    command_str = input_strings[1]
+    command_function = get(commands_dict, command_str, false)
+
+    result_str = string(command_function(blockchain, input_strings))
+end
+
 function main()
 
     # Se crea la blockchain
@@ -119,8 +128,44 @@ function main()
 
     # Diccionario de comandos
     commands_dict = Dict(init_command => Init, transfer_command => Transfer, mine_command => Mine, balance_command => Balance, txn_command => Txn, block_command => Block, save_command => Save, load_command => Load)
+    
+    run_with_gui = true
 
-    create_gui(commands_dict, blockchain)
+    if (run_with_gui == false)
+        selected_filepath = "/Users/franciscoperczyk/Desktop/Facultad/tdl/TDL-Julia-Mandarinas/src/input/commands_1.txt"
+        
+        open(selected_filepath, "r") do io
+
+            timer = TimerOutput()
+
+            @timeit timer "Total" begin
+                str = read(io, String)
+                lines_array = split(str, '\n')
+                for line_iter in lines_array 
+                    execute_command_without_gui(blockchain, commands_dict, string(line_iter))
+                end
+            end
+            disable_timer!(timer)
+            show(timer)
+        end
+        open(selected_filepath, "r") do io
+
+            timer = TimerOutput()
+
+            @timeit timer "Total" begin
+                str = read(io, String)
+                lines_array = split(str, '\n')
+                for line_iter in lines_array 
+                    execute_command_without_gui(blockchain, commands_dict, string(line_iter))
+                end
+            end
+            disable_timer!(timer)
+            show(timer)
+        end
+    
+    else
+        create_gui(commands_dict, blockchain)
+    end
 
 end
 

@@ -134,7 +134,6 @@ transfer maggie marge 20 moe 20
 transfer satoshi marge 20 moe 20
 mine 4
 save blockchain2
-load blockchain1
 balance moe
 balance marge
 balance maggie
