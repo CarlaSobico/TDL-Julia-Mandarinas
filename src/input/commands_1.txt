@@ -1,7 +1,145 @@
-init banco 1000 2
+init banco 100000 2
 transfer banco lola 100
 transfer banco quattro 20
 balance quattro
 balance lola
 balance carla
-mine 2
+mine 3
+transfer banco fran 40
+transfer banco mato 103
+transfer banco mato 101
+transfer banco mato 1030
+transfer banco mato 10
+transfer banco mato 105
+mine 5
+transfer banco mato 10
+transfer banco mato 10
+mine 3
+transfer mato quattro 55.4 lola 12.3
+balance mato
+balance quattro
+balance lola
+mine 5
+transfer banco lola 1800 fran 1000 carla 20
+transfer banco quattro 20
+mine 1
+balance quattro
+balance lola
+balance carla
+transfer banco fran 40
+transfer banco mato 10
+transfer banco mato 10
+transfer banco mato 10
+transfer banco mato 10
+transfer banco mato 10
+mine 5
+transfer banco mato 10
+transfer banco mato 10
+mine 3
+transfer mato quattro 55.4 lola 12.3
+balance mato
+balance quattro
+balance lola
+mine 5
+transfer banco lola 100 fran 100 carla 20
+transfer banco quattro 20
+mine 1
+balance quattro
+balance lola
+balance carla
+transfer banco fran 40
+transfer banco mato 104
+transfer banco mato 102
+transfer banco mato 104
+transfer banco mato 106
+transfer banco mato 108
+mine 5
+transfer banco mato 10
+transfer banco mato 10
+mine 3
+transfer mato quattro 55.4 lola 12.3
+balance mato
+balance quattro
+balance lola
+mine 5
+transfer banco lola 100 fran 100 carla 20
+transfer banco quattro 20
+mine 1
+balance quattro
+balance lola
+balance carla
+transfer banco fran 40
+transfer banco mato 10
+transfer banco mato 10
+transfer banco mato 10
+transfer banco mato 10
+transfer banco mato 10
+mine 5
+transfer banco mato 10
+transfer banco mato 10
+mine 3
+transfer mato quattro 55.4 lola 12.3
+balance mato
+balance quattro
+balance lola
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+mine 5
+transfer fran quattro 12 carla 2 lola 7
+balance banco
+balance quattro
+balance fran
+balance carla
+balance lola
+save blockchain1
+init satoshi 100000 2
+transfer satoshi maggie 100
+transfer satoshi marge 20 moe 20
+transfer satoshi marge 20 moe 20
+transfer satoshi marge 20 moe 20
+mine 4
+balance moe
+balance marge
+balance maggie
+balance satoshi
+transfer marge satoshi 10
+mine 4
+transfer maggie marge 20 moe 20
+transfer satoshi marge 20 moe 20
+mine 4
+transfer satoshi homero 100
+transfer satoshi marge 20 moe 20
+transfer satoshi marge 20 moe 20
+transfer satoshi marge 20 moe 20
+mine 4
+balance moe
+balance marge
+balance maggie
+balance satoshi
+transfer marge satoshi 10
+mine 4
+transfer maggie marge 20 moe 20
+transfer satoshi marge 20 moe 20
+mine 4
+save blockchain2
+load blockchain1
+balance moe
+balance marge
+balance maggie
+balance satoshi
+balance lola
+balance mato
+balance fran
+balance quattro

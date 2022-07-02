@@ -12,7 +12,7 @@ mutable struct Input
 end
 
 function Genesis()
-    return Input("F"^32, 0, "F"^32)
+    return Input("F"^64, 0, "F"^64)
 end
 
 function CompareAddr(input::Input, addr::String)

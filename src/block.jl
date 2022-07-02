@@ -26,7 +26,7 @@ end
 
 function Genesis(value::Float64, addr::String)
     block = Block()
-    block.prev_block = "F"^32
+    block.prev_block = "F"^64
     AddTx(block, TransactionModule.Genesis(value, addr))
     return block
 end
@@ -113,8 +113,9 @@ function LoadBlock(file::IOStream)
     return block
 end
 
-function MineBlock(block::Block, bits::Int)
+function MineBlock(block::Block, bits::Int, prev_block::String)
     block.txns_hash = HashString(ArrayTxToString(block.txns))
+    block.prev_block = prev_block
     while (CheckBits(bits, ToString(block)) == false)
         block.nonce += 1
     end

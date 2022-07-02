@@ -1,6 +1,7 @@
 using Gtk
 using Dates
 
+using  TimerOutputs
 
 function create_gui(commands_dict, blockchain)
 
@@ -75,14 +76,20 @@ function create_gui(commands_dict, blockchain)
     select_file_menu = signal_connect(select_button, "clicked") do widget
         selected_filepath = open_dialog("SELECT FILE...")
 
-        # ANY CODE YOU LIKE - but until then....
         try
             open(selected_filepath, "r") do io
-                str = read(io, String)
-                lines_array = split(str, '\n')
-                for line_iter in lines_array 
-                    execute_command(blockchain, commands_dict, textbuffer_results, string(line_iter))
+
+                timer = TimerOutput()
+
+                @timeit timer "Total" begin
+                    str = read(io, String)
+                    lines_array = split(str, '\n')
+                    for line_iter in lines_array 
+                        execute_command(blockchain, commands_dict, textbuffer_results, string(line_iter))
+                    end
                 end
+                disable_timer!(timer)
+                show(timer)
         end
         catch
             return "Could not read the file contents."

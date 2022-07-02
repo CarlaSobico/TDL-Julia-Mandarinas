@@ -31,7 +31,7 @@ function Init(chain::Chain, user::String, value::Float64, bits::Int)
     genesis_block = BlockModule.Genesis(value, user)
     AddBlock(chain, genesis_block)
 
-    BlockModule.MineBlock(genesis_block, bits)
+    BlockModule.MineBlock(genesis_block, bits, genesis_block.prev_block)
 
     return HashString(BlockModule.ToString(genesis_block))
 end
@@ -69,13 +69,14 @@ function MineAndAddMempool(chain::Chain, bits::Int)
     if chain.mempool.txn_count > 0
 
         # Se agrega el bloque a la Blockchain
-        result = BlockModule.MineBlock(chain.mempool, bits)
+        prev_block_hash = HashString(BlockModule.ToString(chain.blocks_array[end]))
+        result = BlockModule.MineBlock(chain.mempool, bits, prev_block_hash)
         AddBlock(chain, chain.mempool)
 
         # Se reinicia la mepool
         chain.mempool = BlockModule.Block()
     end
-    
+
     return result
 end
 

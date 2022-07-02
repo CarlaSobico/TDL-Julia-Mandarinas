@@ -11,23 +11,28 @@ include("util.jl")
 include("gui.jl")
 # Using
 import .ChainModule
-
 # Functions
 
 function Init(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    result = ChainModule.Init(chain,HashString(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
+    # result = ChainModule.Init(chain,HashString(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
+    result = ChainModule.Init(chain,(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
+    
     return result
 end
 
 function Transfer(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 
-    user_source = HashString(string(inputs_string[2]))
+    # user_source = HashString(string(inputs_string[2]))
+    user_source = (string(inputs_string[2]))
+    
     destinations_array = Array{Dict{String,Any}}(undef, 0)
 
     i = 3
     while i < length(inputs_string)
 
-        addr = HashString(string(inputs_string[i]))
+        # addr = HashString(string(inputs_string[i]))
+        addr = (string(inputs_string[i]))
+
         i += 1
         value = parse(Float64, inputs_string[i])
         i += 1
@@ -48,7 +53,8 @@ function Mine(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 end
 
 function Balance(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    user_addr = HashString(string(inputs_string[2]))
+    # user_addr = HashString(string(inputs_string[2]))
+    user_addr = (string(inputs_string[2]))
 
     result, outputs_info_array = ChainModule.GetBalance(chain, user_addr)
 
@@ -107,6 +113,7 @@ function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
 end
 
 function main()
+
     # Se crea la blockchain
     blockchain = ChainModule.Chain()
 
