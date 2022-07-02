@@ -8,15 +8,15 @@
 
 include("chain.jl")
 include("util.jl")
-
+include("gui.jl")
 # Using
 import .ChainModule
 
 # Functions
 
 function Init(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    result = ChainModule.Init(chain, HashString(string(inputs_string[2])), parse(Float64, inputs_string[3]), parse(Int, inputs_string[4]))
-    println(result)
+    result = ChainModule.Init(chain,HashString(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
+    return result
 end
 
 function Transfer(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
@@ -37,7 +37,7 @@ function Transfer(chain::ChainModule.Chain, inputs_string::Array{SubString{Strin
 
     result = ChainModule.Transfer(chain, user_source, destinations_array)
 
-    println(result)
+    return result
 end
 
 function Mine(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
@@ -52,15 +52,15 @@ function Balance(chain::ChainModule.Chain, inputs_string::Array{SubString{String
 
     result, outputs_info_array = ChainModule.GetBalance(chain, user_addr)
 
-    println(result)
+    return result
 end
 
 function Txn(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    println("Txn")
+    return "Txn"
 end
 
 function Block(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
-    println("Block")
+    return "Block"
 end
 
 function Save(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
@@ -80,7 +80,7 @@ function Save(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
     write(file, blockchain_string)
     close(file)
 
-    println(ok_str)
+    return ok_str
 
 end
 
@@ -102,46 +102,18 @@ function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
         result = fail_str
     end
 
-    println(result)
+    return result
 
 end
 
 function main()
-
-    println("Inicio, ingrese un comando...")
-
     # Se crea la blockchain
     blockchain = ChainModule.Chain()
 
     # Diccionario de comandos
     commands_dict = Dict(init_command => Init, transfer_command => Transfer, mine_command => Mine, balance_command => Balance, txn_command => Txn, block_command => Block, save_command => Save, load_command => Load)
 
-    # Bloque genesis trucho - Eliminar cuando comando mine este creado
-    # genesis_block = ChainModule.BlockModule.Block()
-    # output = ChainModule.BlockModule.TransactionModule.OutputModule.Output(1000, HashString("banco"))
-    # input = ChainModule.BlockModule.TransactionModule.InputModule.Input()
-    # tx = ChainModule.BlockModule.TransactionModule.Tx()
-    # ChainModule.BlockModule.TransactionModule.AddInput(tx, input)
-    # ChainModule.BlockModule.TransactionModule.AddOutput(tx, output)
-    # ChainModule.BlockModule.AddTx(genesis_block, tx)
-    # ChainModule.AddBlock(blockchain, genesis_block)
-
-    while true
-
-        # Leer de stdin
-        input_strings = split(readline())
-
-        command_str = input_strings[1]
-        command_function = get(commands_dict, command_str, false)
-
-        if command_function == false
-            println("El comando [ ", command_str, " ] no es valido.")
-        else
-            command_function(blockchain, input_strings)
-        end
-    end
-
-    println("Fin")
+    create_gui(commands_dict, blockchain)
 
 end
 
