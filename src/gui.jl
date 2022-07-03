@@ -74,8 +74,7 @@ function create_gui(commands_dict, blockchain)
     end
 
     select_file_menu = signal_connect(select_button, "clicked") do widget
-        # selected_filepath = open_dialog("SELECT FILE...")
-        selected_filepath = "commands_1"
+        selected_filepath = open_dialog("SELECT FILE...")
 
         try
             open(selected_filepath, "r") do io
