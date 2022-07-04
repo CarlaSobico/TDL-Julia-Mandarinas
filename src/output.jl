@@ -24,10 +24,10 @@ function ToString(output::Output)
 end
 
 function LoadOutput(file::IOStream)
-    
+
     output = Output()
 
-    output.value = parse(Float64, readuntil(file," "))
+    output.value = parse(Float64, readuntil(file, " "))
     output.addr = readline(file)
 
     return output
