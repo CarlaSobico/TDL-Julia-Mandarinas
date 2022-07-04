@@ -101,15 +101,21 @@ function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
     end
 
     if isfile(file_name)
-
         file = open(file_name, "r")
-        result = ChainModule.Load(chain, file)
+        try
+            result = ChainModule.Load(chain, file)
+        catch e
+            result = fail_str
+            println(e)
+        finally
+            close(file)
+        end
     else
         result = fail_str
     end
 
-    return result
 
+    return result
 end
 
 function execute_command_without_gui(blockchain, commands_dict, line_str::String)
