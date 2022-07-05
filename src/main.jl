@@ -114,7 +114,6 @@ function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
         result = fail_str
     end
 
-
     return result
 end
 
