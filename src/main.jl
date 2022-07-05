@@ -15,8 +15,8 @@ import .ChainModule
 
 function Init(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
     # result = ChainModule.Init(chain,HashString(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
-    result = ChainModule.Init(chain,(string(inputs_string[2])), parse(Float64 , inputs_string[3]), parse(Int, inputs_string[4]))
-    
+    result = ChainModule.Init(chain, (string(inputs_string[2])), parse(Float64, inputs_string[3]), parse(Int, inputs_string[4]))
+
     return result
 end
 
@@ -24,7 +24,7 @@ function Transfer(chain::ChainModule.Chain, inputs_string::Array{SubString{Strin
 
     # user_source = HashString(string(inputs_string[2]))
     user_source = (string(inputs_string[2]))
-    
+
     destinations_array = Array{Dict{String,Any}}(undef, 0)
 
     i = 3
@@ -101,15 +101,20 @@ function Load(chain::ChainModule.Chain, inputs_string::Array{SubString{String}})
     end
 
     if isfile(file_name)
-
         file = open(file_name, "r")
-        result = ChainModule.Load(chain, file)
+        try
+            result = ChainModule.Load(chain, file)
+        catch e
+            result = fail_str
+            println(e)
+        finally
+            close(file)
+        end
     else
         result = fail_str
     end
 
     return result
-
 end
 
 function execute_command_without_gui(blockchain, commands_dict, line_str::String)
@@ -128,12 +133,12 @@ function main()
 
     # Diccionario de comandos
     commands_dict = Dict(init_command => Init, transfer_command => Transfer, mine_command => Mine, balance_command => Balance, txn_command => Txn, block_command => Block, save_command => Save, load_command => Load)
-    
+
     run_with_gui = true
 
     if (run_with_gui == false)
         selected_filepath = "/Users/franciscoperczyk/Desktop/Facultad/tdl/TDL-Julia-Mandarinas/src/input/commands_1.txt"
-        
+
         open(selected_filepath, "r") do io
 
             timer = TimerOutput()
@@ -141,7 +146,7 @@ function main()
             @timeit timer "Total" begin
                 str = read(io, String)
                 lines_array = split(str, '\n')
-                for line_iter in lines_array 
+                for line_iter in lines_array
                     execute_command_without_gui(blockchain, commands_dict, string(line_iter))
                 end
             end
@@ -155,14 +160,14 @@ function main()
             @timeit timer "Total" begin
                 str = read(io, String)
                 lines_array = split(str, '\n')
-                for line_iter in lines_array 
+                for line_iter in lines_array
                     execute_command_without_gui(blockchain, commands_dict, string(line_iter))
                 end
             end
             disable_timer!(timer)
             show(timer)
         end
-    
+
     else
         create_gui(commands_dict, blockchain)
     end

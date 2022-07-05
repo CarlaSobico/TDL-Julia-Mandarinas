@@ -10,12 +10,12 @@ import SHA
 import .OutputModule
 import .InputModule
 
-    mutable struct Tx
-        n_tx_in::Int
-        inputs_array::Array{InputModule.Input}
+mutable struct Tx
+    n_tx_in::Int
+    inputs_array::Array{InputModule.Input}
 
-        n_tx_out::Int
-        outputs_array::Array{OutputModule.Output}
+    n_tx_out::Int
+    outputs_array::Array{OutputModule.Output}
 
     # Default Constructor
     Tx(n_tx_in=0, inputs_array=Array{InputModule.Input}[], n_tx_out=0, outputs_array=Array{OutputModule.Output}[]
@@ -26,7 +26,7 @@ end
 
 # Transaccion genesis
 function Genesis(value::Float64, addr::String)
-    
+
     tx = Tx()
 
     AddInput(tx, InputModule.Genesis())
@@ -80,17 +80,15 @@ end
 # Buscar output en la transaccion por addr y ademas devuelve el tx_id y el idx ----------------
 function FindOutputsInfoByAddr(tx::Tx, addr::String)
 
-    outputs_info = Array{Dict{String, Any}}(undef, 0)
+    outputs_info = Array{Dict{String,Any}}(undef, 0)
 
     found_outputs_indexes = findall(x -> OutputModule.CompareAddr(x, addr), tx.outputs_array)
     tx_id = HashString(ToString(tx))
 
     for index in found_outputs_indexes
 
-        output_info_element = Dict{String, Any}(
-              tx_id_str => tx_id
-            , idx_str => index
-            , output_str => tx.outputs_array[index]
+        output_info_element = Dict{String,Any}(
+            tx_id_str => tx_id, idx_str => index, output_str => tx.outputs_array[index]
         )
 
         push!(outputs_info, output_info_element)
@@ -116,10 +114,10 @@ function ToString(tx::Tx)
 end
 
 # Crea una transaccion a partir de los destintarios y la info de los outputs disponibles para el user_source
-function CreateTransaction(user_source::String, amount_of_coins::Float64, available_outputs_array::Array{Dict{String, Any}}, destinations_array::Array{Dict{String, Any}})
+function CreateTransaction(user_source::String, amount_of_coins::Float64, available_outputs_array::Array{Dict{String,Any}}, destinations_array::Array{Dict{String,Any}})
 
     tx = Tx()
-    
+
     needed_coins = amount_of_coins
 
     # Se crean los inputs a partir de los available outputs de donde se pueden sacar coins
@@ -142,7 +140,7 @@ function CreateTransaction(user_source::String, amount_of_coins::Float64, availa
         AddOutput(tx, output)
     end
 
-    for destinations_iter in destinations_array 
+    for destinations_iter in destinations_array
         output = OutputModule.Output(destinations_iter[value_str], destinations_iter[addr_str])
         AddOutput(tx, output)
     end
@@ -170,7 +168,7 @@ function LoadTx(file::IOStream)
     if n_tx_out != length(tx.outputs_array) || n_tx_in != length(tx.inputs_array)
         return false
     end
-    
+
     return tx
 end
 

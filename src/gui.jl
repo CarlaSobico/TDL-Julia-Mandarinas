@@ -1,7 +1,7 @@
 using Gtk
 using Dates
 
-using  TimerOutputs
+using TimerOutputs
 
 function create_gui(commands_dict, blockchain)
 
@@ -22,13 +22,13 @@ function create_gui(commands_dict, blockchain)
 
     # Create the output text area
     textbuffer_results = GtkTextBuffer() # access point for text
-    textview = GtkTextView(buffer = textbuffer_results) # buffer inside textview
+    textview = GtkTextView(buffer=textbuffer_results) # buffer inside textview
     scrolledwindow = GtkScrolledWindow(textview) # textview inside scrolledwindow
     set_gtk_property!(textbuffer_results, :text, "")
     set_gtk_property!(scrolledwindow, :min_content_height, 200)
     set_gtk_property!(textview, :wrap_mode, 2)
     set_gtk_property!(textview, :left_margin, 5)
-    
+
 
     # Create dropdown menu
     command_options = GtkComboBoxText()
@@ -49,12 +49,12 @@ function create_gui(commands_dict, blockchain)
     grid[4, 2] = execute_button
     grid[1, 3] = select_button
 
-    grid[1:4,4] = scrolledwindow
+    grid[1:4, 4] = scrolledwindow
 
 
     # CREATE THE WINDOW AND ADD THE GRID
     window = GtkWindow("Blockchain", 1000, 300)
-    set_gtk_property!(window, :resizable, true) 
+    set_gtk_property!(window, :resizable, true)
     push!(window, grid)
     showall(window)
 
@@ -68,7 +68,7 @@ function create_gui(commands_dict, blockchain)
 
         execute_command(blockchain, commands_dict, textbuffer_results, final_command_str)
     end
-    
+
     change_dropdown_menu = signal_connect(command_options, "changed") do widgets
         set_gtk_property!(command_entry, :text, "")
     end
@@ -84,18 +84,18 @@ function create_gui(commands_dict, blockchain)
                 @timeit timer "Total" begin
                     str = read(io, String)
                     lines_array = split(str, '\n')
-                    for line_iter in lines_array 
+                    for line_iter in lines_array
                         execute_command(blockchain, commands_dict, textbuffer_results, string(line_iter))
                     end
                 end
                 disable_timer!(timer)
                 show(timer)
-        end
-        catch
+            end
+        catch e
             return "Could not read the file contents."
         end
     end
-    
+
     # condition keeps window open, unless closed by user.
     if !isinteractive()
         c = Condition()
